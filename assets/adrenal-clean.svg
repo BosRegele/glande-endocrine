@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-labelledby="title desc">
+  <title id="title">Schema glandei suprarenale</title>
+  <desc id="desc">Diagramă cu rinichi, glandă suprarenală, corticală și medulară.</desc>
+  <rect width="720" height="480" fill="#f8fbff"/>
+  <g transform="translate(90 70)">
+    <path d="M168 74 C95 60 62 125 77 204 C92 282 161 336 221 289 C266 253 272 171 239 119 C220 91 197 79 168 74 Z" fill="#9f5f3f" stroke="#713f12" stroke-width="5"/>
+    <path d="M119 42 C154 4 226 8 260 52 C222 70 169 72 119 42 Z" fill="#f59e0b" stroke="#92400e" stroke-width="5"/>
+    <path d="M140 48 C170 24 214 25 240 53 C210 60 170 61 140 48 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/>
+    <path d="M174 48 C190 36 215 39 226 54 C205 57 187 56 174 48 Z" fill="#fb923c" stroke="#c2410c" stroke-width="3"/>
+  </g>
+  <g transform="translate(395 55)">
+    <rect x="0" y="0" width="235" height="330" rx="24" fill="#fff" stroke="#cbd5e1" stroke-width="3"/>
+    <path d="M42 40 C102 20 177 32 195 95 C216 170 176 260 102 281 C57 293 28 260 34 210 C39 166 60 145 49 112 C40 86 23 61 42 40 Z" fill="#f59e0b" opacity=".95" stroke="#92400e" stroke-width="4"/>
+    <path d="M68 64 C116 48 164 61 176 106 C191 164 156 229 104 247 C73 258 58 238 65 207 C74 164 88 145 75 111 C67 91 56 75 68 64 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/>
+    <path d="M96 100 C130 89 157 111 158 150 C160 195 130 224 98 215 C74 208 79 178 91 153 C101 132 78 110 96 100 Z" fill="#c2410c" opacity=".88" stroke="#7c2d12" stroke-width="3"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1e3a5f">
+    <text x="92" y="60">Suprarenală</text>
+    <text x="96" y="420">Rinichi</text>
+    <text x="520" y="80">Corticală</text>
+    <text x="520" y="112" font-size="15" font-weight="600" fill="#64748b">exterior: corticoizi</text>
+    <text x="520" y="260">Medulară</text>
+    <text x="520" y="292" font-size="16" font-weight="600" fill="#64748b">interior: adrenalină</text>
+  </g>
+  <g stroke="#0d9488" stroke-width="4" stroke-linecap="round" fill="none">
+    <line x1="174" y1="65" x2="248" y2="113"/>
+    <line x1="156" y1="404" x2="212" y2="311"/>
+    <line x1="507" y1="73" x2="568" y2="117"/>
+    <line x1="505" y1="253" x2="506" y2="205"/>
+  </g>
+</svg>

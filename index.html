@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemul Endocrin - Ghid de Studiu</title>
+<style>
+  :root {
+    --blue: #1e3a5f;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --sky: #e0f2fe;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --gray: #f1f5f9;
+    --text: #1e293b;
+    --muted: #64748b;
+    --white: #ffffff;
+    --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f9ff; color: var(--text); }
+
+  /* LAYOUT */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 270px; background: var(--blue); color: white;
+    position: fixed; top: 0; left: 0; height: 100vh;
+    overflow-y: auto; z-index: 100; transition: transform .3s;
+  }
+  .sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .sidebar-header h1 { font-size: 1.1rem; line-height: 1.4; }
+  .sidebar-header p { font-size: .75rem; opacity: .6; margin-top: 4px; }
+  .progress-bar-wrap { margin: 12px 20px; background: rgba(255,255,255,.15); border-radius: 99px; height: 6px; }
+  .progress-bar { height: 6px; background: var(--teal-light); border-radius: 99px; width: 0%; transition: width .4s; }
+  .progress-label { font-size: .7rem; opacity: .6; padding: 4px 20px 12px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 20px; cursor: pointer; border-left: 3px solid transparent;
+    transition: all .2s; font-size: .88rem; opacity: .7;
+  }
+  .nav-item:hover { background: rgba(255,255,255,.08); opacity: 1; }
+  .nav-item.active { background: rgba(13,148,136,.25); border-left-color: var(--teal-light); opacity: 1; font-weight: 600; }
+  .nav-item .num { width: 22px; height: 22px; background: rgba(255,255,255,.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
+  .nav-item.done .num { background: var(--teal); }
+
+  .main { margin-left: 270px; flex: 1; }
+  .topbar { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar h2 { font-size: 1.15rem; color: var(--blue); }
+  .btn { padding: 8px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: .88rem; font-weight: 600; transition: all .2s; }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-primary:hover { background: #0d8070; }
+  .btn-outline { background: transparent; border: 2px solid var(--teal); color: var(--teal); }
+  .btn-outline:hover { background: var(--sky); }
+  .btn-nav { background: var(--blue); color: white; margin-left: 8px; }
+  .btn-nav:hover { background: #162d4a; }
+
+  /* LESSON CONTENT */
+  .lesson { display: none; padding: 40px; max-width: 900px; }
+  .lesson.active { display: block; }
+  .lesson-hero { background: linear-gradient(135deg, var(--blue), var(--teal)); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; }
+  .lesson-hero .lesson-num { font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; opacity: .7; margin-bottom: 8px; }
+  .lesson-hero h2 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .lesson-hero p { opacity: .85; line-height: 1.6; font-size: .95rem; }
+
+  .card { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
+  .card h3 { color: var(--blue); font-size: 1.1rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card h3 .icon { width: 32px; height: 32px; border-radius: 8px; background: var(--sky); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .card h4 { color: var(--teal); font-size: .95rem; margin: 16px 0 8px; }
+  .card p, .card li { color: var(--text); line-height: 1.7; font-size: .93rem; }
+  .card ul, .card ol { padding-left: 20px; }
+  .card li { margin-bottom: 6px; }
+
+  .highlight-box { background: var(--sky); border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0; padding: 16px 20px; margin: 12px 0; }
+  .highlight-box.gold { background: #fffbeb; border-left-color: var(--gold); }
+  .highlight-box.red { background: #fef2f2; border-left-color: var(--red); }
+  .highlight-box.green { background: #f0fdf4; border-left-color: var(--green); }
+  .highlight-box strong { display: block; margin-bottom: 4px; font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: .78rem; font-weight: 600; margin: 3px; }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+  .tag-teal { background: #ccfbf1; color: #0f766e; }
+  .tag-gold { background: #fef3c7; color: #92400e; }
+  .tag-red { background: #fee2e2; color: #991b1b; }
+  .tag-green { background: #d1fae5; color: #065f46; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .mini-card { background: var(--gray); border-radius: 10px; padding: 16px; }
+  .mini-card h5 { color: var(--blue); font-size: .88rem; margin-bottom: 8px; }
+  .mini-card p, .mini-card li { font-size: .84rem; }
+
+  .hormone-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .87rem; }
+  .hormone-table th { background: var(--blue); color: white; padding: 10px 14px; text-align: left; }
+  .hormone-table td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; }
+  .hormone-table tr:hover td { background: var(--sky); }
+
+  /* QUIZ */
+  .quiz-section { background: linear-gradient(135deg, #0f172a, var(--blue)); border-radius: 16px; padding: 32px; margin-top: 32px; color: white; }
+  .quiz-section h3 { font-size: 1.4rem; margin-bottom: 6px; }
+  .quiz-section .subtitle { opacity: .7; font-size: .88rem; margin-bottom: 28px; }
+  .quiz-score { text-align: center; padding: 20px; }
+  .quiz-score .score-num { font-size: 3rem; font-weight: 800; color: var(--teal-light); }
+  .quiz-score p { opacity: .8; margin-top: 8px; }
+
+  .q-item { background: rgba(255,255,255,.07); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .q-item .q-text { font-size: .97rem; font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .q-options { display: grid; gap: 8px; }
+  .q-option {
+    background: rgba(255,255,255,.08); border: 2px solid transparent;
+    border-radius: 8px; padding: 10px 16px; cursor: pointer;
+    font-size: .88rem; transition: all .2s; text-align: left; color: white;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .q-option:hover:not(:disabled) { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3); }
+  .q-option.correct { background: rgba(16,185,129,.25); border-color: var(--green); }
+  .q-option.wrong { background: rgba(239,68,68,.2); border-color: var(--red); }
+  .q-option:disabled { cursor: default; }
+  .q-option .opt-letter { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+  .q-feedback { margin-top: 10px; font-size: .83rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .q-feedback.show { display: block; }
+  .q-feedback.ok { background: rgba(16,185,129,.2); color: #6ee7b7; }
+  .q-feedback.no { background: rgba(239,68,68,.15); color: #fca5a5; }
+  .quiz-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .btn-quiz { padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: .9rem; font-weight: 700; transition: all .2s; }
+  .btn-check { background: var(--teal); color: white; }
+  .btn-check:hover { background: var(--teal-light); }
+  .btn-reset { background: rgba(255,255,255,.1); color: white; }
+  .btn-reset:hover { background: rgba(255,255,255,.2); }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .lesson { padding: 20px; }
+    .grid2 { grid-template-columns: 1fr; }
+    .topbar { padding: 12px 20px; }
+    .lesson-hero { padding: 24px; }
+    .lesson-hero h2 { font-size: 1.5rem; }
+  }
+  .menu-btn { display: none; background: var(--blue); color: white; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 1.2rem; }
+  @media (max-width: 768px) { .menu-btn { display: block; } }
+
+  .tip-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 18px; margin: 12px 0; font-size: .88rem; }
+  .tip-box::before { content: '💡 '; font-size: 1rem; }
+
+  .sep { height: 1px; background: #e2e8f0; margin: 20px 0; }
+
+  .annotated-figure { position: relative; margin: 16px auto 8px; overflow: hidden; border-radius: 12px; background: #fff; border: 1px solid #dbeafe; max-width: 760px; box-shadow: var(--card-shadow); }
+  .annotated-figure img { display: block; width: 100%; height: auto; }
+  .annotated-figure .label-lines, .annotated-figure .callout { display: none; }
+  .annotated-figure .label-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .annotated-figure .label-lines line { stroke: var(--teal); stroke-width: .55; stroke-linecap: round; }
+  .annotated-figure .label-lines circle { fill: var(--teal); stroke: white; stroke-width: .45; }
+  .callout {
+    position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%);
+    max-width: 210px; padding: 7px 10px; border-radius: 8px;
+    background: rgba(255,255,255,.94); border: 1px solid #99f6e4;
+    color: var(--blue); font-size: .78rem; line-height: 1.35; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(15,23,42,.12);
+  }
+  .callout small { display: block; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .visual-caption { color: var(--muted); font-size: .82rem; line-height: 1.55; margin-top: 10px; }
+  .memory-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .memory-strip span { background: var(--sky); color: var(--blue); border-radius: 8px; padding: 10px 12px; font-size: .83rem; font-weight: 700; text-align: center; }
+  .study-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+  .term-card { background: #f8fafc; border: 1px solid #dbeafe; border-radius: 10px; padding: 14px 16px; }
+  .term-card strong { display: block; color: var(--blue); margin-bottom: 5px; font-size: .9rem; }
+  .term-card p { font-size: .84rem; line-height: 1.55; color: var(--text); }
+  .flashcard { background: white; border: 1px solid #ccfbf1; border-radius: 10px; overflow: hidden; }
+  .flashcard summary { cursor: pointer; list-style: none; padding: 14px 16px; color: var(--blue); font-weight: 800; font-size: .9rem; }
+  .flashcard summary::-webkit-details-marker { display: none; }
+  .flashcard summary::after { content: '+'; float: right; color: var(--teal); font-size: 1.1rem; }
+  .flashcard[open] summary::after { content: '-'; }
+  .flashcard p { padding: 0 16px 14px; font-size: .84rem; line-height: 1.6; color: var(--text); }
+  .method-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 12px; }
+  .method-box h5 { color: var(--teal); font-size: .9rem; margin-bottom: 8px; }
+  .method-box ol { padding-left: 20px; }
+  .method-box li { font-size: .86rem; line-height: 1.6; margin-bottom: 5px; }
+  .question-bank { display: grid; gap: 14px; margin-top: 16px; }
+  .practice-card { background: #ffffff; border: 1px solid #dbeafe; border-radius: 10px; padding: 18px; box-shadow: 0 3px 12px rgba(15,23,42,.05); }
+  .practice-card h4 { color: var(--blue); font-size: .98rem; margin: 0 0 10px; }
+  .practice-card p, .practice-card li { font-size: .9rem; line-height: 1.65; }
+  .practice-card .answer { margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+  .practice-card summary { cursor: pointer; color: var(--teal); font-weight: 800; font-size: .88rem; }
+  .practice-card summary::marker { color: var(--teal); }
+  .prompt-chip { display: inline-block; background: #eef2ff; color: #3730a3; border-radius: 99px; padding: 4px 10px; font-size: .76rem; font-weight: 800; margin-bottom: 10px; }
+  .practice-list { counter-reset: practice; display: grid; gap: 12px; margin-top: 12px; }
+  .practice-list .practice-card { position: relative; padding-left: 54px; }
+  .practice-list .practice-card::before {
+    counter-increment: practice; content: counter(practice);
+    position: absolute; left: 16px; top: 18px; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--teal); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .78rem; font-weight: 800;
+  }
+
+  @media (max-width: 768px) {
+    .callout { font-size: .68rem; max-width: 150px; padding: 5px 7px; }
+    .memory-strip { grid-template-columns: 1fr; }
+    .study-grid { grid-template-columns: 1fr; }
+    .practice-list .practice-card { padding-left: 18px; }
+    .practice-list .practice-card::before { position: static; margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>🧬 Sistemul Endocrin</h1>
+    <p>Ghid complet de studiu</p>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 9 lecții</div>
+
+  <div class="nav-item active" onclick="showLesson(0)" id="nav0">
+    <span class="num">1</span> Introducere
+  </div>
+  <div class="nav-item" onclick="showLesson(1)" id="nav1">
+    <span class="num">2</span> Hipofiza - Lobul Anterior
+  </div>
+  <div class="nav-item" onclick="showLesson(2)" id="nav2">
+    <span class="num">3</span> Hipofiza - Lobul Mijlociu & Posterior
+  </div>
+  <div class="nav-item" onclick="showLesson(3)" id="nav3">
+    <span class="num">4</span> Tiroida
+  </div>
+  <div class="nav-item" onclick="showLesson(4)" id="nav4">
+    <span class="num">5</span> Glandele Suprarenale
+  </div>
+  <div class="nav-item" onclick="showLesson(5)" id="nav5">
+    <span class="num">6</span> Pancreasul Endocrin
+  </div>
+  <div class="nav-item" onclick="showLesson(6)" id="nav6">
+    <span class="num">7</span> Gonadele Endocrine
+  </div>
+  <div class="nav-item" onclick="showLesson(7)" id="nav7">
+    <span class="num">8</span> Disfuncții Endocrine
+  </div>
+  <div class="nav-item" onclick="showLesson(8)" id="nav8">
+    <span class="num">9</span> Întrebări
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <h2 id="topTitle">Introducere în Sistemul Endocrin</h2>
+    </div>
+    <div>
+      <button class="btn btn-outline" onclick="prevLesson()">← Înapoi</button>
+      <button class="btn btn-nav" onclick="nextLesson()">Înainte →</button>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 1: INTRODUCERE ========== -->
+  <div class="lesson active" id="lesson0">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 1</div>
+      <h2>Sistemul Endocrin</h2>
+      <p>Cuprinde totalitatea glandelor care produc hormoni — mesageri chimici transportați direct prin sânge pentru a controla funcțiile vitale ale organismului.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔬</span> Ce este sistemul endocrin?</h3>
+      <p>Sistemul endocrin cuprinde <strong>totalitatea glandelor cu secreție internă</strong>, adică glandele care produc hormoni. Hormonii sunt <strong>mesageri chimici</strong> care sunt vărsați direct în sânge și acționează la distanță de locul sintezei lor, asupra unor celule specifice numite <em>celule țintă</em>.</p>
+      <div class="highlight-box" style="margin-top:16px;">
+        <strong>Definiție cheie</strong>
+        Glandele endocrine = glande cu secreție internă → secretă hormoni direct în sânge (fără duct/canal excretor)
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🏛️</span> Glandele sistemului endocrin</h3>
+      <p>Principalele glande endocrine din organism:</p>
+      <div class="grid2" style="margin-top:14px;">
+        <div class="mini-card">
+          <h5>🧠 Hipofiza (Glanda pituitară)</h5>
+          <p>„Creierul endocrin" — controlează celelalte glande</p>
+        </div>
+        <div class="mini-card">
+          <h5>🦋 Tiroida</h5>
+          <p>Cea mai mare glandă endocrină pură (25-30 g)</p>
+        </div>
+        <div class="mini-card">
+          <h5>🫘 Glandele suprarenale</h5>
+          <p>Situate la polul superior al rinichilor</p>
+        </div>
+        <div class="mini-card">
+          <h5>🫁 Pancreasul endocrin</h5>
+          <p>Glandă mixtă — insulele Langerhans</p>
+        </div>
+        <div class="mini-card">
+          <h5>⚥ Gonadele endocrine</h5>
+          <p>Ovare (estrogen/progesteron) + Testicule (testosteron)</p>
+        </div>
+        <div class="mini-card">
+          <h5>🌙 Epifiza + Timusul</h5>
+          <p>Glanda pineală (melatonină) + rol imunitar</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🗺️</span> Hartă vizuală: unde sunt glandele endocrine?</h3>
+      <p>Învață-le de sus în jos: cap → gât → torace → abdomen → pelvis. Așa nu le încurci la recapitulare.</p>
+      <figure class="annotated-figure">
+        <img src="assets/endocrine-system.svg" alt="Diagramă educațională: localizarea principalelor glande endocrine">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="41" y1="47" x2="22" y2="43"></line><circle cx="41" cy="47" r="1.2"></circle>
+          <line x1="40" y1="55" x2="24" y2="57"></line><circle cx="40" cy="55" r="1.2"></circle>
+          <line x1="35" y1="70" x2="18" y2="71"></line><circle cx="35" cy="70" r="1.2"></circle>
+          <line x1="43" y1="84" x2="25" y2="88"></line><circle cx="43" cy="84" r="1.2"></circle>
+          <line x1="41" y1="113" x2="23" y2="116"></line><circle cx="41" cy="113" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:22%;--y:32%;">Epifiza, hipotalamus, hipofiza <small>control rapid al altor glande</small></span>
+        <span class="callout" style="--x:24%;--y:43%;">Tiroida + paratiroidele <small>metabolism și calcemie</small></span>
+        <span class="callout" style="--x:18%;--y:53%;">Timusul <small>important în imunitate</small></span>
+        <span class="callout" style="--x:25%;--y:66%;">Suprarenale + pancreas <small>stres, săruri, glicemie</small></span>
+        <span class="callout" style="--x:23%;--y:87%;">Gonade <small>ovare/testicule: hormoni sexuali</small></span>
+      </figure>
+      <p class="visual-caption">Diagramă educațională: fiecare linie arată poziția glandei în corp. Reține ideea mare: hormonii sunt produși local, dar circulă prin sânge și pot acționa la distanță.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚗️</span> Ce sunt hormonii?</h3>
+      <ul>
+        <li>Sunt <strong>substanțe chimice</strong> sintetizate în glande endocrine</li>
+        <li>Sunt eliberați direct <strong>în sânge</strong> (nu prin canale)</li>
+        <li>Acționează asupra unor <strong>celule țintă specifice</strong></li>
+        <li>Au concentrații foarte mici, dar efecte puternice</li>
+        <li>Reglează <strong>metabolismul, creșterea, reproducerea</strong> și homeostazia</li>
+      </ul>
+      <div class="tip-box" style="margin-top:12px;">
+        Diferența față de glandele exocrine: glandele exocrine (ex: glandele salivare) secretă prin ducte, pe suprafețe sau în cavități. Glandele endocrine secretă direct în sânge.
+      </div>
+    </div>
+
+    <!-- QUIZ 1 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 1</h3>
+      <div class="subtitle">Răspunde la toate întrebările, apoi apasă „Verifică răspunsurile"</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce sunt hormonii?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1',false)"><span class="opt-letter">A</span> Substanțe secretate prin ducte pe suprafețe externe</button>
+          <button class="q-option" onclick="selectOpt(this,'q1',true)"><span class="opt-letter">B</span> Mesageri chimici vărsați direct în sânge, ce acționează la distanță</button>
+          <button class="q-option" onclick="selectOpt(this,'q1',false)"><span class="opt-letter">C</span> Enzime digestive produse de pancreas</button>
+          <button class="q-option" onclick="selectOpt(this,'q1',false)"><span class="opt-letter">D</span> Substanțe care se formează în ficat</button>
+        </div>
+        <div class="q-feedback" id="fb-q1"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Care glandă este supranumită „Creierul endocrin"?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2',false)"><span class="opt-letter">A</span> Tiroida</button>
+          <button class="q-option" onclick="selectOpt(this,'q2',false)"><span class="opt-letter">B</span> Glandele suprarenale</button>
+          <button class="q-option" onclick="selectOpt(this,'q2',true)"><span class="opt-letter">C</span> Hipofiza</button>
+          <button class="q-option" onclick="selectOpt(this,'q2',false)"><span class="opt-letter">D</span> Pancreasul</button>
+        </div>
+        <div class="q-feedback" id="fb-q2"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Care dintre următoarele NU este o glandă endocrină?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3',false)"><span class="opt-letter">A</span> Hipofiza</button>
+          <button class="q-option" onclick="selectOpt(this,'q3',false)"><span class="opt-letter">B</span> Tiroida</button>
+          <button class="q-option" onclick="selectOpt(this,'q3',true)"><span class="opt-letter">C</span> Glanda salivară</button>
+          <button class="q-option" onclick="selectOpt(this,'q3',false)"><span class="opt-letter">D</span> Epifiza</button>
+        </div>
+        <div class="q-feedback" id="fb-q3"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Ce se înțelege prin „celule țintă"?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4',false)"><span class="opt-letter">A</span> Celule care produc hormoni</button>
+          <button class="q-option" onclick="selectOpt(this,'q4',true)"><span class="opt-letter">B</span> Celulele specifice asupra cărora acționează hormonul</button>
+          <button class="q-option" onclick="selectOpt(this,'q4',false)"><span class="opt-letter">C</span> Celule din sânge care transportă hormonii</button>
+          <button class="q-option" onclick="selectOpt(this,'q4',false)"><span class="opt-letter">D</span> Celule care distrug hormonii</button>
+        </div>
+        <div class="q-feedback" id="fb-q4"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson0')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson0')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson0" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 2: HIPOFIZA - LOB ANTERIOR ========== -->
+  <div class="lesson" id="lesson1">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 2</div>
+      <h2>Hipofiza — Lobul Anterior</h2>
+      <p>Adenohipofiza (75% din hipofiză) secretă 6 hormoni esențiali care controlează creșterea, metabolismul și reproducerea.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🧠</span> Hipofiza — prezentare generală</h3>
+      <ul>
+        <li>Supranumită <strong>„Creierul endocrin"</strong> — controlează activitatea celorlalte glande endocrine</li>
+        <li>Localizată la baza encefalului în <strong>șaua turcească</strong> a osului sfenoid</li>
+        <li>Dimensiunea unui bob de fasole, cântărind <strong>~0,5 grame</strong></li>
+        <li>Legată de hipotalamus prin <strong>tija hipofizară</strong> (conține tract nervos + rețea vasculară)</li>
+      </ul>
+      <div class="highlight-box" style="margin-top:12px;">
+        <strong>Structura hipofizei — 3 lobi</strong>
+        🔵 Lobul anterior (adenohipofiza) = <strong>75%</strong><br>
+        🟡 Lobul intermediar = <strong>2%</strong><br>
+        🟢 Lobul posterior (neurohipofiza) = <strong>23%</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🧭</span> Hipofiza pe imagine: lobii și legătura cu hipotalamusul</h3>
+      <p>Hipofiza este mică, dar controlează multe glande. Când vezi schema, separă mereu „partea care produce” de „partea care depozitează”.</p>
+      <figure class="annotated-figure">
+        <img src="assets/pituitary.svg" alt="Diagramă: hipotalamusul și hipofiza">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="24" y1="25" x2="14" y2="18"></line><circle cx="24" cy="25" r="1.2"></circle>
+          <line x1="24" y1="35" x2="13" y2="39"></line><circle cx="24" cy="35" r="1.2"></circle>
+          <line x1="27" y1="49" x2="15" y2="56"></line><circle cx="27" cy="49" r="1.2"></circle>
+          <line x1="39" y1="46" x2="52" y2="54"></line><circle cx="39" cy="46" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:14%;--y:14%;">Hipotalamus <small>dă comenzi către hipofiză</small></span>
+        <span class="callout" style="--x:13%;--y:29%;">Tija hipofizară <small>legătură nervoasă și vasculară</small></span>
+        <span class="callout" style="--x:15%;--y:42%;">Adenohipofiza <small>lob anterior: STH, PRL, TSH, ACTH, FSH, LH</small></span>
+        <span class="callout" style="--x:52%;--y:41%;">Neurohipofiza <small>lob posterior: eliberează ADH și oxitocină</small></span>
+      </figure>
+      <div class="memory-strip">
+        <span>Anterior = produce 6 hormoni</span>
+        <span>Mijlociu = MSH</span>
+        <span>Posterior = depozitează ADH și oxitocină</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">💊</span> Categoria 1: Hormoni nonglandulotropi</h3>
+      <p style="margin-bottom:14px;">Acționează direct asupra <em>țesuturilor periferice</em> (nu asupra altor glande).</p>
+
+      <h4>a) STH — Hormonul Somatotrop (Hormonul de creștere)</h4>
+      <ul>
+        <li>Stimulează <strong>creșterea și dezvoltarea</strong> întregului organism</li>
+        <li>Determină creșterea oaselor și dezvoltarea musculaturii</li>
+        <li>Creșterea viscerelor (cu excepția creierului)</li>
+        <li>Stimulează sinteza proteinelor prin stimularea pătrunderii aminoacizilor</li>
+      </ul>
+      <div class="grid2" style="margin-top:14px;">
+        <div class="highlight-box red">
+          <strong>⬇ Hiposecreție STH — la copil</strong>
+          <strong>Nanism hipofizar (piticism)</strong>: dezvoltare fizică redusă, dar armonioasă; intelect normal
+        </div>
+        <div class="highlight-box gold">
+          <strong>⬆ Hipersecreție STH</strong>
+          La copil: <strong>Gigantism</strong> (peste 2 m)<br>
+          La adult: <strong>Acromegalie</strong> — creșterea extremităților (mâini, picioare, mandibulă, nas, urechi, organe interne)
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <h4>b) Prolactina (PRL)</h4>
+      <ul>
+        <li>Stimulează <strong>dezvoltarea glandelor mamare</strong></li>
+        <li>Stimulează <strong>secreția de lapte</strong> în timpul sarcinii și alăptării</li>
+        <li>Este un inhibitor al ovulației (în timpul alăptării)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🎯</span> Categoria 2: Hormoni glandulotropi</h3>
+      <p style="margin-bottom:14px;">Stimulează <strong>dezvoltarea și secreția</strong> altor glande endocrine.</p>
+
+      <table class="hormone-table">
+        <tr>
+          <th>Hormon</th>
+          <th>Denumire completă</th>
+          <th>Acțiune</th>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">TSH</span></td>
+          <td>Tireotropina (hormon tireotrop)</td>
+          <td>Stimulează secreția <strong>tiroidei</strong></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-teal">ACTH</span></td>
+          <td>Corticotropina</td>
+          <td>Controlează activitatea <strong>zonei corticale</strong> a suprarenalei</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">FSH</span></td>
+          <td>Hormon foliculostimulant</td>
+          <td>
+            ♀ dezvoltarea foliculilor + secreție estrogen<br>
+            ♂ dezvoltarea tubilor seminiferi + spermatogeneză<br>
+            ⚥ formarea gameților (ambele sexe)
+          </td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-green">LH</span></td>
+          <td>Hormon luteinizant</td>
+          <td>
+            ♀ ovulație + corp galben (secretă progesteron)<br>
+            ♂ stimulează secreția de testosteron
+          </td>
+        </tr>
+      </table>
+
+      <div class="tip-box">
+        Memotehnic pentru glandulotropi: <strong>TSH-ACTH-FSH-LH</strong> — „Tiroida, Suprarenala, Foliculii, Luteul"
+      </div>
+    </div>
+
+    <!-- QUIZ 2 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 2</h3>
+      <div class="subtitle">Testează cunoștințele despre hipofiza anterioară</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce afecțiune apare prin hiposecreția de STH la copil?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1b',false)"><span class="opt-letter">A</span> Gigantism</button>
+          <button class="q-option" onclick="selectOpt(this,'q1b',false)"><span class="opt-letter">B</span> Acromegalie</button>
+          <button class="q-option" onclick="selectOpt(this,'q1b',true)"><span class="opt-letter">C</span> Nanism hipofizar (piticism)</button>
+          <button class="q-option" onclick="selectOpt(this,'q1b',false)"><span class="opt-letter">D</span> Mixedem</button>
+        </div>
+        <div class="q-feedback" id="fb-q1b"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Care hormon stimulează secreția tiroidei?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2b',false)"><span class="opt-letter">A</span> FSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q2b',false)"><span class="opt-letter">B</span> ACTH</button>
+          <button class="q-option" onclick="selectOpt(this,'q2b',true)"><span class="opt-letter">C</span> TSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q2b',false)"><span class="opt-letter">D</span> LH</button>
+        </div>
+        <div class="q-feedback" id="fb-q2b"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Acromegalia este cauzată de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3b',false)"><span class="opt-letter">A</span> Hiposecreția de STH la adult</button>
+          <button class="q-option" onclick="selectOpt(this,'q3b',true)"><span class="opt-letter">B</span> Hipersecreția de STH la adult</button>
+          <button class="q-option" onclick="selectOpt(this,'q3b',false)"><span class="opt-letter">C</span> Hipersecreția de TSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q3b',false)"><span class="opt-letter">D</span> Hiposecreția de ACTH</button>
+        </div>
+        <div class="q-feedback" id="fb-q3b"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Prolactina (PRL) are rol în:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4b',false)"><span class="opt-letter">A</span> Reglarea glicemiei</button>
+          <button class="q-option" onclick="selectOpt(this,'q4b',false)"><span class="opt-letter">B</span> Creșterea oaselor</button>
+          <button class="q-option" onclick="selectOpt(this,'q4b',true)"><span class="opt-letter">C</span> Stimularea secreției de lapte</button>
+          <button class="q-option" onclick="selectOpt(this,'q4b',false)"><span class="opt-letter">D</span> Reglarea calcemiei</button>
+        </div>
+        <div class="q-feedback" id="fb-q4b"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">5. Ce face FSH la femei?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q5b',false)"><span class="opt-letter">A</span> Stimulează ovulația</button>
+          <button class="q-option" onclick="selectOpt(this,'q5b',true)"><span class="opt-letter">B</span> Stimulează dezvoltarea foliculilor și secreția de estrogen</button>
+          <button class="q-option" onclick="selectOpt(this,'q5b',false)"><span class="opt-letter">C</span> Stimulează secreția de testosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q5b',false)"><span class="opt-letter">D</span> Stimulează secreția de progesteron</button>
+        </div>
+        <div class="q-feedback" id="fb-q5b"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson1')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson1')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson1" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 3: HIPOFIZA - LOB MIJLOCIU & POSTERIOR ========== -->
+  <div class="lesson" id="lesson2">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 3</div>
+      <h2>Hipofiza — Lobul Mijlociu & Posterior</h2>
+      <p>Lobul intermediar secretă MSH pentru pigmentarea pielii. Lobul posterior depozitează și eliberează ADH și Oxitocina — hormoni produși de hipotalamus.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🎨</span> Lobul intermediar</h3>
+      <p>Reprezintă <strong>2%</strong> din masa hipofizei. Produce un singur hormon important:</p>
+      <div class="highlight-box" style="margin-top:12px;">
+        <strong>MSH — Hormonul melanocit-stimulator</strong>
+        Stimulează sinteza de <strong>melanină</strong> în melanocite → rol în <strong>pigmentarea pielii</strong>
+      </div>
+      <p style="margin-top:10px; color:var(--muted); font-size:.88rem;">MSH are aceleași origini moleculare cu ACTH (ambii provin din aceeași moleculă precursoare).</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🫗</span> Lobul posterior (Neurohipofiza)</h3>
+      <p>Reprezintă <strong>23%</strong> din hipofiză. <em>Nu produce</em> hormoni proprii — depozitează și eliberează în circulație hormoni produși de <strong>hipotalamusul anterior</strong>:</p>
+
+      <h4>1. ADH — Hormonul Antidiuretic (Vasopresina)</h4>
+      <ul>
+        <li>Stimulează <strong>reabsorbția apei</strong> la nivelul tubilor contorți distali și al tubilor colectori ai rinichiului</li>
+        <li>Principala acțiune = <strong>concentrarea urinei</strong> → retenție de apă în organism</li>
+      </ul>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="highlight-box red">
+          <strong>⬇ Hiposecreție ADH</strong>
+          <strong>Diabet insipid</strong>: poliurie (urină mult, diluată) + polidipsie (sete, consum mare de apă) + hipotensiune
+        </div>
+        <div class="highlight-box green">
+          <strong>⬆ Hipersecreție ADH</strong>
+          Retenție de apă → edeme, hipertensiune
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <h4>2. Oxitocina</h4>
+      <ul>
+        <li>Stimulează <strong>contracțiile uterului gravid</strong>, mai ales în pregătirea travaliului</li>
+        <li>Stimulează <strong>ejecția laptelui</strong> din glandele mamare în timpul alăptării (prin contracția celulelor mioepiteliale din pereții alveolelor)</li>
+      </ul>
+      <div class="highlight-box" style="margin-top:12px;">
+        <strong>Rezumat neurohipofiză</strong>
+        ADH → reținere apă la rinichi (antidiuretic)<br>
+        Oxitocina → contracții uterine + ejecție lapte
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔗</span> Schema Hipotalamus-Hipofiză</h3>
+      <div style="background:var(--blue);color:white;border-radius:10px;padding:20px;text-align:center;font-size:.9rem;line-height:2;">
+        <strong style="font-size:1rem;">HIPOTALAMUS</strong><br>
+        ↓ (tija hipofizară)<br>
+        <strong>HIPOFIZĂ</strong><br>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px;text-align:left;">
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px;">
+            <strong>Lob Anterior</strong><br>STH, PRL, TSH, ACTH, FSH, LH
+          </div>
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px;">
+            <strong>Lob Mijlociu</strong><br>MSH
+          </div>
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px;">
+            <strong>Lob Posterior</strong><br>ADH, Oxitocina
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ 3 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 3</h3>
+      <div class="subtitle">Lobul mijlociu și posterior al hipofizei</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce hormon secretă lobul intermediar al hipofizei?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1c',false)"><span class="opt-letter">A</span> ADH</button>
+          <button class="q-option" onclick="selectOpt(this,'q1c',false)"><span class="opt-letter">B</span> Oxitocina</button>
+          <button class="q-option" onclick="selectOpt(this,'q1c',true)"><span class="opt-letter">C</span> MSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q1c',false)"><span class="opt-letter">D</span> TSH</button>
+        </div>
+        <div class="q-feedback" id="fb-q1c"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. ADH acționează la nivelul:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2c',false)"><span class="opt-letter">A</span> Ficatului</button>
+          <button class="q-option" onclick="selectOpt(this,'q2c',true)"><span class="opt-letter">B</span> Tubilor contorți distali și tubilor colectori ai rinichiului</button>
+          <button class="q-option" onclick="selectOpt(this,'q2c',false)"><span class="opt-letter">C</span> Pancreasului</button>
+          <button class="q-option" onclick="selectOpt(this,'q2c',false)"><span class="opt-letter">D</span> Uterului</button>
+        </div>
+        <div class="q-feedback" id="fb-q2c"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Diabetul insipid este cauzat de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3c',false)"><span class="opt-letter">A</span> Hiposecreție de insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q3c',false)"><span class="opt-letter">B</span> Hipersecreție de ADH</button>
+          <button class="q-option" onclick="selectOpt(this,'q3c',true)"><span class="opt-letter">C</span> Hiposecreție de ADH</button>
+          <button class="q-option" onclick="selectOpt(this,'q3c',false)"><span class="opt-letter">D</span> Hiposecreție de oxitocină</button>
+        </div>
+        <div class="q-feedback" id="fb-q3c"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Oxitocina este eliberată din lobul posterior, dar este produsă de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4c',false)"><span class="opt-letter">A</span> Adenohipofiză</button>
+          <button class="q-option" onclick="selectOpt(this,'q4c',true)"><span class="opt-letter">B</span> Hipotalamusul anterior</button>
+          <button class="q-option" onclick="selectOpt(this,'q4c',false)"><span class="opt-letter">C</span> Lobul intermediar</button>
+          <button class="q-option" onclick="selectOpt(this,'q4c',false)"><span class="opt-letter">D</span> Cortexul cerebral</button>
+        </div>
+        <div class="q-feedback" id="fb-q4c"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson2')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson2')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson2" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 4: TIROIDA ========== -->
+  <div class="lesson" id="lesson3">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 4</div>
+      <h2>Tiroida</h2>
+      <p>Cea mai mare glandă endocrină pură — secretă hormoni care conțin iod și reglează metabolismul, creșterea și termogeneza.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🦋</span> Anatomie și structură</h3>
+      <ul>
+        <li>Este <strong>cea mai mare glandă endocrină</strong> — 25-30 grame</li>
+        <li>Localizată în <strong>partea anterioară a gâtului</strong>, în dreptul cartilajului tiroid al laringelui</li>
+        <li>Are forma literei <strong>„H"</strong> — doi lobi uniți prin istmul tiroidian</li>
+        <li>Celulele endocrine sunt aranjate în <strong>foliculi tiroidieni</strong> = vezicule pline cu un lichid vâscos numit <em>coloid</em> (conține tireoglobulina — forma de depozit a hormonilor)</li>
+        <li>Conține și <strong>celule parafoliculare (celule C)</strong> care secretă calcitonina</li>
+        <li>Secreția este reglată prin mecanism de feedback hipotalamo-hipofizo-tiroidian, controlat de TSH</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🦋</span> Tiroida pe imagine: ce trebuie recunoscut</h3>
+      <p>Tiroida stă în fața gâtului și are doi lobi uniți printr-o punte numită istm. În interior, hormonii sunt legați de foliculii tiroidieni.</p>
+      <figure class="annotated-figure">
+        <img src="assets/thyroid-clean.svg" alt="Diagramă: glanda tiroidă, lobii, istmul, traheea și foliculul tiroidian">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="22" y1="56" x2="12" y2="48"></line><circle cx="22" cy="56" r="1.2"></circle>
+          <line x1="26" y1="67" x2="15" y2="72"></line><circle cx="26" cy="67" r="1.2"></circle>
+          <line x1="29" y1="74" x2="15" y2="84"></line><circle cx="29" cy="74" r="1.2"></circle>
+          <line x1="38" y1="58" x2="54" y2="55"></line><circle cx="38" cy="58" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:12%;--y:36%;">Laringe <small>reper anatomic deasupra tiroidei</small></span>
+        <span class="callout" style="--x:15%;--y:54%;">Lobii tiroidei <small>cei doi „aripi” ale glandei</small></span>
+        <span class="callout" style="--x:15%;--y:63%;">Trahee <small>tubul respirator din spate</small></span>
+        <span class="callout" style="--x:54%;--y:41%;">Folicul tiroidian <small>coloid + celule foliculare</small></span>
+      </figure>
+      <p class="visual-caption">Pentru test: leagă imaginea de ideea-cheie „T3/T4 au iod și cresc metabolismul”, iar calcitonina scade calcemia.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚗️</span> Hormonii tiroidieni</h3>
+      <p>Tiroida secretă doi hormoni care <strong>conțin iod</strong>:</p>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="mini-card">
+          <h5>T4 — Tiroxina</h5>
+          <p>Forma principală secretată; acționează mai lent</p>
+        </div>
+        <div class="mini-card">
+          <h5>T3 — Triiodotironina</h5>
+          <p>Forma activă; acționează mai rapid, mai potent</p>
+        </div>
+      </div>
+      <div class="highlight-box gold" style="margin-top:14px;">
+        <strong>Important</strong>
+        Cei doi hormoni au acțiuni identice, dar T3 acționează mai rapid. Sinteza lor depinde de prezența <strong>iodului</strong> în alimentație.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📋</span> Acțiunile hormonilor tiroidieni</h3>
+      <ol type="a">
+        <li style="margin-bottom:10px;"><strong>Stimulează creșterea și dezvoltarea</strong>, mai ales la nivelul sistemului nervos → diferențierea neuronilor, mielinizarea axonilor, dezvoltarea sinapselor</li>
+        <li style="margin-bottom:10px;"><strong>Stimulează activitățile celulare cu producere de căldură</strong> → tiroida este o <em>glandă termogenetică</em></li>
+        <li style="margin-bottom:10px;">Sunt <strong>singurii hormoni</strong> care stimulează metabolismul pe <em>toate cele trei metabolisme</em> (glucidic, lipidic, proteic)</li>
+        <li style="margin-bottom:10px;"><strong>Reglează caloricul</strong> (consumul energetic bazal)</li>
+        <li style="margin-bottom:10px;"><strong>Mențin umiditatea pielii</strong> (împreună cu prolactina)</li>
+        <li><strong>Controlează funcția de reproducere</strong></li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚠️</span> Disfuncții tiroidiene</h3>
+
+      <h4>⬇ Hiposecreție (Hipotiroidism)</h4>
+      <div class="grid2">
+        <div class="highlight-box red">
+          <strong>La copil — Nanism tiroidian (Cretinism)</strong>
+          Dezvoltare fizică redusă, deformări grave, înapoiere mentală
+        </div>
+        <div class="highlight-box red">
+          <strong>La adult — Mixedem</strong>
+          Creștere în greutate, senzație permanentă de frig, piele uscată și aspră, căderea părului, înbibarea țesuturilor cu mucus, apatie, dificultăți de concentrare și memorie
+        </div>
+      </div>
+
+      <h4 style="margin-top:16px;">⬆ Hipersecreție — Boala Basedow-Graves (Gușa toxică)</h4>
+      <div class="highlight-box gold">
+        <strong>Simptome caracteristice</strong>
+        <ul style="margin-top:6px;">
+          <li>Creșterea în dimensiune a glandei (gușă)</li>
+          <li>Hiperfagie cu scădere în greutate</li>
+          <li>Tahicardie (puls accelerat)</li>
+          <li>Piele caldă și umedă</li>
+          <li>Intoleranță la căldură</li>
+          <li>Tremurături ale mâinilor</li>
+          <li>Labilitate emoțională, nervozitate, agitație</li>
+          <li><strong>Exoftalmie</strong> — bulbucarea ochilor (50% din cazuri)</li>
+        </ul>
+      </div>
+
+      <h4 style="margin-top:16px;">🫘 Gușa endemică</h4>
+      <p>Cauzată de <strong>lipsa iodului din alimentație</strong>. Glanda crește mult în dimensiuni, stimulată de TSH hipofizar, dar nu poate produce hormoni (lipsa iodului). Apar simptomele hipotiroidiei.</p>
+
+      <div class="highlight-box" style="margin-top:12px;">
+        <strong>Calcitonina</strong>
+        Secretată de celulele C (parafoliculare) ale tiroidei. Este un hormon <strong>hipocalcemiant</strong> — ajută la fixarea Ca²⁺ în oase. Antagonistul parathormonului (PTH).
+      </div>
+
+      <div class="highlight-box green" style="margin-top:12px;">
+        <strong>Paratiroidele și PTH</strong>
+        Paratiroidele sunt patru glande mici situate pe fața posterioară a lobilor tiroidieni. Ele secretă <strong>parathormonul (PTH)</strong>, hormon <strong>hipercalcemiant</strong>: crește calcemia prin acțiune asupra oaselor, rinichiului și absorbției intestinale a calciului. Pe scurt: <strong>calcitonina scade Ca²⁺, PTH crește Ca²⁺</strong>.
+      </div>
+    </div>
+
+    <!-- QUIZ 4 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 4</h3>
+      <div class="subtitle">Tiroida și hormonii tiroidieni</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Câte grame cântărește tiroida?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1d',false)"><span class="opt-letter">A</span> 0,5 grame</button>
+          <button class="q-option" onclick="selectOpt(this,'q1d',false)"><span class="opt-letter">B</span> 5-10 grame</button>
+          <button class="q-option" onclick="selectOpt(this,'q1d',true)"><span class="opt-letter">C</span> 25-30 grame</button>
+          <button class="q-option" onclick="selectOpt(this,'q1d',false)"><span class="opt-letter">D</span> 100 grame</button>
+        </div>
+        <div class="q-feedback" id="fb-q1d"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Ce element chimic este esențial pentru sinteza hormonilor tiroidieni?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2d',false)"><span class="opt-letter">A</span> Calciu</button>
+          <button class="q-option" onclick="selectOpt(this,'q2d',false)"><span class="opt-letter">B</span> Fier</button>
+          <button class="q-option" onclick="selectOpt(this,'q2d',true)"><span class="opt-letter">C</span> Iod</button>
+          <button class="q-option" onclick="selectOpt(this,'q2d',false)"><span class="opt-letter">D</span> Zinc</button>
+        </div>
+        <div class="q-feedback" id="fb-q2d"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Exoftalmia (bulbucarea ochilor) este caracteristică pentru:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3d',false)"><span class="opt-letter">A</span> Mixedem</button>
+          <button class="q-option" onclick="selectOpt(this,'q3d',false)"><span class="opt-letter">B</span> Nanism tiroidian</button>
+          <button class="q-option" onclick="selectOpt(this,'q3d',true)"><span class="opt-letter">C</span> Boala Basedow-Graves</button>
+          <button class="q-option" onclick="selectOpt(this,'q3d',false)"><span class="opt-letter">D</span> Gușa endemică</button>
+        </div>
+        <div class="q-feedback" id="fb-q3d"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Ce afecțiune apare la copil din cauza hiposecreției hormonilor tiroidieni?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4d',false)"><span class="opt-letter">A</span> Gigantism</button>
+          <button class="q-option" onclick="selectOpt(this,'q4d',false)"><span class="opt-letter">B</span> Mixedem</button>
+          <button class="q-option" onclick="selectOpt(this,'q4d',true)"><span class="opt-letter">C</span> Cretinism (nanism tiroidian)</button>
+          <button class="q-option" onclick="selectOpt(this,'q4d',false)"><span class="opt-letter">D</span> Diabet insipid</button>
+        </div>
+        <div class="q-feedback" id="fb-q4d"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">5. Hormonii tiroidieni stimulează metabolismul pe:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q5d',false)"><span class="opt-letter">A</span> Numai metabolismul glucidic</button>
+          <button class="q-option" onclick="selectOpt(this,'q5d',false)"><span class="opt-letter">B</span> Metabolismul glucidic și lipidic</button>
+          <button class="q-option" onclick="selectOpt(this,'q5d',true)"><span class="opt-letter">C</span> Toate cele trei metabolisme (glucidic, lipidic, proteic)</button>
+          <button class="q-option" onclick="selectOpt(this,'q5d',false)"><span class="opt-letter">D</span> Numai metabolismul proteic</button>
+        </div>
+        <div class="q-feedback" id="fb-q5d"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson3')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson3')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson3" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 5: GLANDELE SUPRARENALE ========== -->
+  <div class="lesson" id="lesson4">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 5</div>
+      <h2>Glandele Suprarenale</h2>
+      <p>Situate la polul superior al rinichilor, alcătuite din două zone distincte: corticala (3 tipuri de hormoni) și medulara (adrenalina).</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🫘</span> Structura generală</h3>
+      <ul>
+        <li>Sunt <strong>glande pereche</strong>, situate la polul superior al rinichilor</li>
+        <li>Sunt alcătuite din <strong>două zone</strong> distincte (embriologic, anatomic și funcțional):</li>
+      </ul>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="mini-card" style="border:2px solid var(--teal);">
+          <h5>🔵 Zona Corticală (Corticosuprarenala — CSR)</h5>
+          <p>Dispusă la periferia glandei, înconjoară complet zona medulei</p>
+        </div>
+        <div class="mini-card" style="border:2px solid var(--gold);">
+          <h5>🟡 Zona Medulei (Medulosuprarenala — MSR)</h5>
+          <p>Porțiunea centrală, funcționează ca un ganglion simpatic</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🧅</span> Suprarenala pe imagine: cortex la exterior, medulă la interior</h3>
+      <p>Imaginează-ți suprarenala ca pe o glandă „în straturi”: exteriorul secretă hormoni steroizi, interiorul secretă adrenalina și noradrenalina.</p>
+      <figure class="annotated-figure">
+        <img src="assets/adrenal-clean.svg" alt="Diagramă: glanda suprarenală, corticala și medulara">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="51" y1="30" x2="69" y2="25"></line><circle cx="51" cy="30" r="1.2"></circle>
+          <line x1="50" y1="40" x2="70" y2="38"></line><circle cx="50" cy="40" r="1.2"></circle>
+          <line x1="42" y1="28" x2="26" y2="22"></line><circle cx="42" cy="28" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:69%;--y:19%;">Corticala <small>mineralocorticoizi, glucocorticoizi, sexosteroizi</small></span>
+        <span class="callout" style="--x:70%;--y:29%;">Medulara <small>adrenalină 80%, noradrenalină 20%</small></span>
+        <span class="callout" style="--x:26%;--y:17%;">Rinichi + suprarenală <small>glanda stă deasupra rinichiului</small></span>
+      </figure>
+      <div class="memory-strip">
+        <span>Cortex = „corticoizi”</span>
+        <span>Medulă = stres acut</span>
+        <span>ACTH controlează corticala</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔵</span> A. Corticosuprarenala (CSR)</h3>
+      <p>Secretă <strong>trei categorii de hormoni steroizi</strong> (sintetizați din colesterol):</p>
+
+      <h4>1. Mineralocorticoizi = Aldosteron</h4>
+      <ul>
+        <li>Reglează <strong>metabolismul mineral și hidric</strong></li>
+        <li>Stimulează reabsorbția <strong>Na⁺</strong> și a apei la nivelul renal</li>
+        <li>Stimulează excreția <strong>K⁺</strong> și H⁺ la nivelul renal</li>
+        <li>Menține echilibrul hidro-electrolitic și presiunea sangvină</li>
+      </ul>
+      <div class="highlight-box red" style="margin-top:8px;">
+        <strong>Boala Addison</strong> (hiposecreție de aldosteron + cortizol): hipoglicemie, dezechilibru electrolitic, hipotensiune, deshidratare, slăbiciune marcată, hiperpigmentare cutanată
+      </div>
+      <div class="highlight-box gold">
+        <strong>Boala Conn</strong> (hipersecreție de aldosteron): edem, hipertensiune, pierdere de K⁺
+      </div>
+
+      <div class="sep"></div>
+      <h4>2. Glucocorticoizi = Cortizol</h4>
+      <ul>
+        <li>Stimulează <strong>gluconeogeneza</strong> din aminoacizi → menține glicemia în limite normale</li>
+        <li>Au puternic rol <strong>antiinflamator</strong> (baza terapiei cu corticosteroizi)</li>
+        <li>Controlat de ACTH hipofizar</li>
+      </ul>
+      <div class="highlight-box gold" style="margin-top:8px;">
+        <strong>Sindromul Cushing</strong> (hipersecreție de cortizol): obezitate cu redistribuție (față „lună plină", ceafă „bizon"), hipertensiune, hiperglicemie, astenie musculară
+      </div>
+
+      <div class="sep"></div>
+      <h4>3. Sexosteroizi = Estrogeni și Testosteron</h4>
+      <ul>
+        <li>Susțin funcția gonadelor</li>
+        <li>Contribuie la apariția și menținerea <strong>caracterelor sexuale secundare</strong></li>
+      </ul>
+      <div class="highlight-box" style="margin-top:8px;">
+        <strong>Sindromul androgenital</strong>: hipersecreție de androgeni suprarenali → pubertate precoce la copii, hipertrofie organe genitale externe, îngroșarea vocii, pilozitate facială la femei
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🟡</span> B. Medulosuprarenala (MSR)</h3>
+      <p>Secretă <strong>catecolamine</strong>:</p>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="mini-card">
+          <h5>Adrenalina (Epinefrina) — 80%</h5>
+          <p>Principala catecolamină, răspuns la stres acut</p>
+        </div>
+        <div class="mini-card">
+          <h5>Noradrenalina (Norepinefrina) — 20%</h5>
+          <p>Predominant vasoconstrictor</p>
+        </div>
+      </div>
+
+      <h4 style="margin-top:16px;">Efectele adrenalinei/noradrenalinei:</h4>
+      <ul>
+        <li>🫀 <strong>Cardiovascular</strong>: tahicardie, vasoconstricție, hipertensiune; crește debitul cardiac</li>
+        <li>🫁 <strong>Respirator</strong>: bronhodilatație, creșterea frecvenței respiratorii</li>
+        <li>🍬 <strong>Metabolic glucidic</strong>: glicogenoliză → hiperglicemie (mobilizare glucoză pentru energie)</li>
+        <li>🧠 <strong>SNC</strong>: alertă, vigilență, stimularea sistemului reticular ascendent</li>
+        <li>👁️ <strong>Alte efecte</strong>: dilatarea pupilei, contracția firelor de păr, inhibarea secreției digestive</li>
+      </ul>
+
+      <div class="tip-box">
+        Medulosuprarenala funcționează ca un ganglion simpatic extins — răspunsul „luptă sau fugi" (fight or flight)
+      </div>
+    </div>
+
+    <!-- QUIZ 5 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 5</h3>
+      <div class="subtitle">Glandele suprarenale</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce hormon reglează metabolismul sodiului și apei la rinichi?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1e',false)"><span class="opt-letter">A</span> Cortizol</button>
+          <button class="q-option" onclick="selectOpt(this,'q1e',true)"><span class="opt-letter">B</span> Aldosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q1e',false)"><span class="opt-letter">C</span> Adrenalina</button>
+          <button class="q-option" onclick="selectOpt(this,'q1e',false)"><span class="opt-letter">D</span> Testosteron</button>
+        </div>
+        <div class="q-feedback" id="fb-q1e"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Sindromul Cushing este cauzat de hipersecreția de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2e',false)"><span class="opt-letter">A</span> Aldosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q2e',true)"><span class="opt-letter">B</span> Cortizol (glucocorticoizi)</button>
+          <button class="q-option" onclick="selectOpt(this,'q2e',false)"><span class="opt-letter">C</span> Adrenalina</button>
+          <button class="q-option" onclick="selectOpt(this,'q2e',false)"><span class="opt-letter">D</span> Estrogeni</button>
+        </div>
+        <div class="q-feedback" id="fb-q2e"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Ce procent reprezintă adrenalina din totalul catecolaminelor suprarenale?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3e',false)"><span class="opt-letter">A</span> 20%</button>
+          <button class="q-option" onclick="selectOpt(this,'q3e',false)"><span class="opt-letter">B</span> 50%</button>
+          <button class="q-option" onclick="selectOpt(this,'q3e',true)"><span class="opt-letter">C</span> 80%</button>
+          <button class="q-option" onclick="selectOpt(this,'q3e',false)"><span class="opt-letter">D</span> 100%</button>
+        </div>
+        <div class="q-feedback" id="fb-q3e"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Boala Addison se caracterizează prin:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4e',false)"><span class="opt-letter">A</span> Hipertensiune și obezitate</button>
+          <button class="q-option" onclick="selectOpt(this,'q4e',true)"><span class="opt-letter">B</span> Hipotensiune, deshidratare, hipoglicemie, hiperpigmentare</button>
+          <button class="q-option" onclick="selectOpt(this,'q4e',false)"><span class="opt-letter">C</span> Tahicardie și tremurături</button>
+          <button class="q-option" onclick="selectOpt(this,'q4e',false)"><span class="opt-letter">D</span> Exoftalmie și creștere în dimensiunea glandei</button>
+        </div>
+        <div class="q-feedback" id="fb-q4e"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">5. Glucocorticoizii stimulează:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q5e',false)"><span class="opt-letter">A</span> Reabsorbția sodiului</button>
+          <button class="q-option" onclick="selectOpt(this,'q5e',true)"><span class="opt-letter">B</span> Gluconeogeneza și au rol antiinflamator</button>
+          <button class="q-option" onclick="selectOpt(this,'q5e',false)"><span class="opt-letter">C</span> Secreția de insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q5e',false)"><span class="opt-letter">D</span> Sinteza proteică musculară</button>
+        </div>
+        <div class="q-feedback" id="fb-q5e"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson4')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson4')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson4" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 6: PANCREASUL ENDOCRIN ========== -->
+  <div class="lesson" id="lesson5">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 6</div>
+      <h2>Pancreasul Endocrin</h2>
+      <p>Glandă mixtă (exocrină + endocrină) — insulele Langerhans secretă insulină și glucagon, reglând glicemia.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🫁</span> Structura pancreasului</h3>
+      <ul>
+        <li>Pancreasul este o <strong>glandă mixtă</strong> cu secreție dublă:
+          <ul>
+            <li><em>Exocrină:</em> sucul pancreatic (enzime digestive)</li>
+            <li><em>Endocrină:</em> hormoni</li>
+          </ul>
+        </li>
+        <li>Localizat în <strong>cavitatea abdominală</strong>, în spatele stomacului, în potcoava duodenului</li>
+        <li>Celulele endocrine sunt grupate în <strong>insulele Langerhans</strong> = 1-3% din masa pancreasului</li>
+      </ul>
+      <div class="grid2" style="margin-top:14px;">
+        <div class="mini-card" style="border-left:4px solid #ef4444;">
+          <h5>Celule α (alfa)</h5>
+          <p>Secretă <strong>glucagon</strong> — hormon hiperglicemiant</p>
+        </div>
+        <div class="mini-card" style="border-left:4px solid var(--teal);">
+          <h5>Celule β (beta)</h5>
+          <p>Secretă <strong>insulină</strong> — singurul hormon hipoglicemiant</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🍬</span> Pancreasul pe imagine: partea endocrină</h3>
+      <p>Pancreasul are și rol digestiv, dar pentru endocrinologie contează insulele Langerhans: celulele alfa cresc glicemia, celulele beta o scad.</p>
+      <figure class="annotated-figure">
+        <img src="assets/pancreas-clean.svg" alt="Diagramă: pancreasul endocrin și insulele Langerhans">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="76" y1="53" x2="80" y2="51"></line><circle cx="76" cy="53" r="1.2"></circle>
+          <line x1="57" y1="70" x2="76" y2="77"></line><circle cx="57" cy="70" r="1.2"></circle>
+          <line x1="46" y1="67" x2="30" y2="75"></line><circle cx="46" cy="67" r="1.2"></circle>
+          <line x1="39" y1="57" x2="22" y2="52"></line><circle cx="39" cy="57" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:80%;--y:38%;">Insulă Langerhans <small>zona endocrină: 1-3% din pancreas</small></span>
+        <span class="callout" style="--x:76%;--y:58%;">Coada pancreasului <small>parte a glandei pancreatice</small></span>
+        <span class="callout" style="--x:30%;--y:56%;">Duoden <small>pancreasul stă în potcoava lui</small></span>
+        <span class="callout" style="--x:22%;--y:39%;">Vezică biliară <small>reper lângă ficat și duoden</small></span>
+      </figure>
+      <div class="memory-strip">
+        <span>Alfa = glucagon = crește glicemia</span>
+        <span>Beta = insulină = scade glicemia</span>
+        <span>Diabet zaharat = deficit de insulină</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📈</span> Glucagonul — Hormon hiperglicemiant</h3>
+      <p>Crește glicemia prin două mecanisme principale:</p>
+      <ul style="margin-top:10px;">
+        <li><strong>Glicogenoliza hepatică</strong>: descompunerea glicogenului hepatic în glucoză</li>
+        <li><strong>Gluconeogeneza</strong>: sinteza de novo a glucozei din precursori neglucidici (aminoacizi, acizi grași)</li>
+      </ul>
+      <div class="highlight-box gold" style="margin-top:12px;">
+        <strong>Efectele glucagonului</strong>
+        Metabolism glucidic: ↑ glicogenoliză + gluconeogeneză<br>
+        Metabolism lipidic: ↑ lipoliză<br>
+        Metabolism proteic: ↑ proteoliză<br>
+        + forța de contracție miocardică, secreția biliară
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📉</span> Insulina — Singurul hormon hipoglicemiant</h3>
+      <p>Insulina a fost <strong>descoperită pentru prima oară</strong> de cercetătorul român <strong>Nicolae C. Paulescu</strong> în 1921. Redescoperită de canadienii F.G. Banting și J.J.R. MacLeod.</p>
+      <ul style="margin-top:12px;">
+        <li>Este <strong>singurul hormon hipoglicemiant</strong></li>
+        <li>Este singurul hormon care stimulează <strong>anabolismul pe toate cele 3 metabolisme</strong></li>
+        <li>Determină <strong>pătrunderea glucozei în celule</strong> și intensifică glicoliza (consumul glucozei → energie)</li>
+        <li>Stimulează <strong>lipogeneza</strong> (sinteza de lipide din glucoză)</li>
+      </ul>
+
+      <h4 style="margin-top:14px;">Efectele metabolice ale insulinei:</h4>
+      <table class="hormone-table">
+        <tr>
+          <th>Metabolism</th>
+          <th>Ficat</th>
+          <th>Țesut adipos</th>
+          <th>Mușchi</th>
+        </tr>
+        <tr>
+          <td><strong>Glucidic</strong></td>
+          <td>↑ glicogeneză, ↓ gluconeogeneză</td>
+          <td>↑ transportul glucozei, ↑ sinteza glicerolului</td>
+          <td>↑ transportul glucozei, ↑ glicoliză, ↑ sinteza glicogenului</td>
+        </tr>
+        <tr>
+          <td><strong>Lipidic</strong></td>
+          <td>↑ lipogeneză</td>
+          <td>↑ trigliceride, ↑ enzime lipogenice, ↓ lipoliză</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>Proteic</strong></td>
+          <td>↓ proteoliză</td>
+          <td>—</td>
+          <td>↑ captarea aminoacizilor, ↑ sinteza proteică</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚠️</span> Diabetul zaharat — Hiposecreție de insulină</h3>
+      <p>Principala disfuncție pancreatică endocrină:</p>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="highlight-box red">
+          <strong>Simptome clasice</strong>
+          <ul>
+            <li>Hiperglicemie</li>
+            <li>Glucozurie (glucoză în urină)</li>
+            <li>Poliurie (urină multă)</li>
+            <li>Polidipsie (sete, consum mare de apă)</li>
+            <li>Polifagie (consum mare de alimente)</li>
+            <li>Scădere în greutate</li>
+          </ul>
+        </div>
+        <div class="highlight-box red">
+          <strong>Complicații</strong>
+          <ul>
+            <li>Cetonemie (corpi cetonici în sânge)</li>
+            <li>Cetonurie (corpi cetonici în urină)</li>
+            <li>Dezechilibre acido-bazice</li>
+            <li>Compromiterea funcțiilor organelor vitale</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ 6 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 6</h3>
+      <div class="subtitle">Pancreasul endocrin — insulina și glucagonul</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce celule din insulele Langerhans secretă insulina?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1f',false)"><span class="opt-letter">A</span> Celule alfa (α)</button>
+          <button class="q-option" onclick="selectOpt(this,'q1f',true)"><span class="opt-letter">B</span> Celule beta (β)</button>
+          <button class="q-option" onclick="selectOpt(this,'q1f',false)"><span class="opt-letter">C</span> Celule delta (δ)</button>
+          <button class="q-option" onclick="selectOpt(this,'q1f',false)"><span class="opt-letter">D</span> Celule C</button>
+        </div>
+        <div class="q-feedback" id="fb-q1f"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Ce procent ocupă insulele Langerhans din masa pancreasului?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2f',true)"><span class="opt-letter">A</span> 1-3%</button>
+          <button class="q-option" onclick="selectOpt(this,'q2f',false)"><span class="opt-letter">B</span> 10-20%</button>
+          <button class="q-option" onclick="selectOpt(this,'q2f',false)"><span class="opt-letter">C</span> 50%</button>
+          <button class="q-option" onclick="selectOpt(this,'q2f',false)"><span class="opt-letter">D</span> 75%</button>
+        </div>
+        <div class="q-feedback" id="fb-q2f"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Cine a descoperit prima oară insulina?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3f',false)"><span class="opt-letter">A</span> F.G. Banting</button>
+          <button class="q-option" onclick="selectOpt(this,'q3f',true)"><span class="opt-letter">B</span> Nicolae C. Paulescu</button>
+          <button class="q-option" onclick="selectOpt(this,'q3f',false)"><span class="opt-letter">C</span> J.J.R. MacLeod</button>
+          <button class="q-option" onclick="selectOpt(this,'q3f',false)"><span class="opt-letter">D</span> Louis Pasteur</button>
+        </div>
+        <div class="q-feedback" id="fb-q3f"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Glucagonul stimulează:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4f',false)"><span class="opt-letter">A</span> Sinteza glicogenului hepatic</button>
+          <button class="q-option" onclick="selectOpt(this,'q4f',true)"><span class="opt-letter">B</span> Glicogenoliza hepatică și gluconeogeneza</button>
+          <button class="q-option" onclick="selectOpt(this,'q4f',false)"><span class="opt-letter">C</span> Pătrunderea glucozei în celule</button>
+          <button class="q-option" onclick="selectOpt(this,'q4f',false)"><span class="opt-letter">D</span> Lipogeneza</button>
+        </div>
+        <div class="q-feedback" id="fb-q4f"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">5. Care dintre aceste simptome NU face parte din diabetul zaharat?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q5f',false)"><span class="opt-letter">A</span> Glucozurie</button>
+          <button class="q-option" onclick="selectOpt(this,'q5f',false)"><span class="opt-letter">B</span> Polidipsie</button>
+          <button class="q-option" onclick="selectOpt(this,'q5f',true)"><span class="opt-letter">C</span> Hipoglicemie</button>
+          <button class="q-option" onclick="selectOpt(this,'q5f',false)"><span class="opt-letter">D</span> Cetonemie</button>
+        </div>
+        <div class="q-feedback" id="fb-q5f"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson5')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson5')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson5" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 7: GONADELE ENDOCRINE ========== -->
+  <div class="lesson" id="lesson6">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 7</div>
+      <h2>Gonadele Endocrine</h2>
+      <p>Ovarele și testiculele sunt glande mixte — pe lângă funcția reproductivă secretă hormoni sexuali esențiali pentru dezvoltare.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚥</span> Generalități</h3>
+      <p>Gonadele (ovarele și testiculele) sunt <strong>glande mixte cu secreție dublă</strong>:</p>
+      <ul>
+        <li><em>Exocrină:</em> gameți (ovule, spermatozoizi)</li>
+        <li><em>Endocrină:</em> hormoni sexuali</li>
+      </ul>
+      <p style="margin-top:10px;">Activitatea gonadelor este controlată de hormonii hipofizari <strong>FSH</strong> și <strong>LH</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚥</span> Gonadele pe imagine: ovare și testicule</h3>
+      <p>Gonadele sunt glande mixte: produc gameți și secretă hormoni sexuali. Învață-le împreună cu FSH și LH, pentru că hipofiza le coordonează.</p>
+      <figure class="annotated-figure">
+        <img src="assets/gonads-clean.svg" alt="Diagramă: ovare și testicule ca gonade endocrine">
+        <svg class="label-lines" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="40" y1="113" x2="22" y2="115"></line><circle cx="40" cy="113" r="1.2"></circle>
+          <line x1="13" y1="103" x2="26" y2="99"></line><circle cx="13" cy="103" r="1.2"></circle>
+        </svg>
+        <span class="callout" style="--x:22%;--y:86%;">Testicule <small>testosteron, spermatogeneză</small></span>
+        <span class="callout" style="--x:26%;--y:74%;">Ovare <small>estrogen + progesteron</small></span>
+      </figure>
+      <div class="memory-strip">
+        <span>FSH = foliculi / spermatogeneză</span>
+        <span>LH = ovulație / testosteron</span>
+        <span>Progesteron = pregătește uterul</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">♀️</span> 1. Ovarele — secretă estrogen și progesteron</h3>
+
+      <h4>a) Estrogenul</h4>
+      <ul>
+        <li>Stimulează <strong>dezvoltarea organelor reproducătoare feminine</strong></li>
+        <li>Determină apariția <strong>caracterelor sexuale secundare feminine</strong>:
+          <ul>
+            <li>Dezvoltarea sânilor</li>
+            <li>Depunerea țesutului adipos la nivelul șoldurilor</li>
+            <li>Dezvoltarea bazinului osos</li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="sep"></div>
+      <h4>b) Progesteronul</h4>
+      <ul>
+        <li>Determină <strong>suprimarea contracțiilor uterine</strong> în vederea nidației (fixarea embrionului)</li>
+        <li>Pregătește mucoasa uterină pentru implantarea ovulului fecundat</li>
+        <li>Menține sarcina în primele luni</li>
+      </ul>
+
+      <div class="highlight-box" style="margin-top:12px;">
+        <strong>Mecanism: FSH → dezvoltare foliculi + secreție estrogen | LH → ovulație + corp galben → progesteron</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">♂️</span> 2. Testiculele — secretă testosteron</h3>
+      <ul>
+        <li>Testosteronul determină <strong>dezvoltarea organelor genitale masculine</strong></li>
+        <li>Determină apariția <strong>caracterelor sexuale secundare masculine</strong>:
+          <ul>
+            <li>Îngroșarea vocii</li>
+            <li>Dezvoltarea musculaturii</li>
+            <li>Creșterea bărbii și a mustății</li>
+            <li>Creșterea pilozității corporale</li>
+          </ul>
+        </li>
+        <li>Stimulează <strong>spermatogeneza</strong> (împreună cu FSH)</li>
+        <li>Secretat de celulele Leydig ale testiculului, stimulate de LH</li>
+      </ul>
+
+      <div class="highlight-box gold" style="margin-top:12px;">
+        <strong>Hormonii sexosteroizi suprarenali</strong>
+        Suprarenala secretă și ea estrogeni și testosteron (sexosteroizi). La copii, hipersecreția duce la pubertate precoce. La femei adulte, hipertrofia organelor genitale externe, îngroșarea vocii, pilozitate facială (barbă, mustață) — sindromul androgenital.
+      </div>
+    </div>
+
+    <!-- QUIZ 7 -->
+    <div class="quiz-section">
+      <h3>🎯 Test — Lecția 7</h3>
+      <div class="subtitle">Gonadele endocrine</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Ce hormon ovarian pregătește uterul pentru nidație?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1g',false)"><span class="opt-letter">A</span> Estrogen</button>
+          <button class="q-option" onclick="selectOpt(this,'q1g',true)"><span class="opt-letter">B</span> Progesteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q1g',false)"><span class="opt-letter">C</span> Testosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q1g',false)"><span class="opt-letter">D</span> LH</button>
+        </div>
+        <div class="q-feedback" id="fb-q1g"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Testosteronul este produs de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2g',false)"><span class="opt-letter">A</span> Celulele Sertoli</button>
+          <button class="q-option" onclick="selectOpt(this,'q2g',true)"><span class="opt-letter">B</span> Celulele Leydig ale testiculului</button>
+          <button class="q-option" onclick="selectOpt(this,'q2g',false)"><span class="opt-letter">C</span> Celulele foliculare ale ovarului</button>
+          <button class="q-option" onclick="selectOpt(this,'q2g',false)"><span class="opt-letter">D</span> Lobul anterior al hipofizei direct</button>
+        </div>
+        <div class="q-feedback" id="fb-q2g"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Estrogenul determină la femei:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3g',false)"><span class="opt-letter">A</span> Creșterea bărbii</button>
+          <button class="q-option" onclick="selectOpt(this,'q3g',false)"><span class="opt-letter">B</span> Spermatogeneza</button>
+          <button class="q-option" onclick="selectOpt(this,'q3g',true)"><span class="opt-letter">C</span> Dezvoltarea sânilor, depunerea grăsimii la șolduri, bazin osos larg</button>
+          <button class="q-option" onclick="selectOpt(this,'q3g',false)"><span class="opt-letter">D</span> Îngroșarea vocii</button>
+        </div>
+        <div class="q-feedback" id="fb-q3g"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Ce hormon hipofizar stimulează ovulația la femei?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4g',false)"><span class="opt-letter">A</span> FSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q4g',true)"><span class="opt-letter">B</span> LH</button>
+          <button class="q-option" onclick="selectOpt(this,'q4g',false)"><span class="opt-letter">C</span> TSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q4g',false)"><span class="opt-letter">D</span> ACTH</button>
+        </div>
+        <div class="q-feedback" id="fb-q4g"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson6')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson6')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson6" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 8: DISFUNCTII ENDOCRINE ========== -->
+  <div class="lesson" id="lesson7">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 8</div>
+      <h2>Disfuncții Endocrine</h2>
+      <p>Recapitulare completă a bolilor cauzate de hipo- sau hipersecreția hormonilor, plus glandele pineală și timusul.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🌙</span> Epifiza (Glanda pineală)</h3>
+      <ul>
+        <li>Situată între tuberculii cvadrigemeni superiori</li>
+        <li>Secretă <strong>melatonină</strong>, cu acțiune frânatoare asupra funcției gonadelor</li>
+        <li>Secretă și <strong>vasotocina</strong>, cu puternică acțiune antigonadotropă</li>
+        <li>Lumina stimulează scăderea secreției de melatonină; la întuneric, secreția crește → rol în ritmul circadian (somn/veghe)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🛡️</span> Timusul</h3>
+      <ul>
+        <li>Are rol de <strong>glandă endocrină</strong> și organ limfatic central</li>
+        <li>Structura mixtă: epiteliu secretor + organ limfatic</li>
+        <li>Se involucează la pubertate (dispare treptat)</li>
+        <li>Funcțiile timusului sunt blocate de hormonii steroizi</li>
+        <li>Hormoni timici: acțiune de frânare a dezvoltării gonadelor, acțiune asupra mineralizării osoase, efecte de oprire a mitozelor</li>
+        <li>Histologic: lobul timic format din celule reticulare, între care sunt celule stem migrante din măduva hematopoietică (limfocite T)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📊</span> Tabel recapitulativ — Disfuncții endocrine</h3>
+      <table class="hormone-table">
+        <tr>
+          <th>Glandă</th>
+          <th>Afecțiune</th>
+          <th>Cauză</th>
+          <th>Simptome principale</th>
+        </tr>
+        <tr>
+          <td>Hipofiza</td>
+          <td><span class="tag tag-red">Nanism hipofizar</span></td>
+          <td>⬇ STH la copil</td>
+          <td>Statură mică, armonioasă, intelect normal</td>
+        </tr>
+        <tr>
+          <td>Hipofiza</td>
+          <td><span class="tag tag-gold">Gigantism</span></td>
+          <td>⬆ STH la copil</td>
+          <td>Înălțime peste 2m</td>
+        </tr>
+        <tr>
+          <td>Hipofiza</td>
+          <td><span class="tag tag-gold">Acromegalie</span></td>
+          <td>⬆ STH la adult</td>
+          <td>Creșterea extremităților (mâini, picioare, mandibulă)</td>
+        </tr>
+        <tr>
+          <td>Hipofiza</td>
+          <td><span class="tag tag-red">Diabet insipid</span></td>
+          <td>⬇ ADH</td>
+          <td>Poliurie cu urină diluată, polidipsie</td>
+        </tr>
+        <tr>
+          <td>Tiroidă</td>
+          <td><span class="tag tag-red">Cretinism</span></td>
+          <td>⬇ T3/T4 la copil</td>
+          <td>Nanism, deformări, înapoiere mentală</td>
+        </tr>
+        <tr>
+          <td>Tiroidă</td>
+          <td><span class="tag tag-red">Mixedem</span></td>
+          <td>⬇ T3/T4 la adult</td>
+          <td>Obezitate, frig, piele uscată, apatie, memorie slabă</td>
+        </tr>
+        <tr>
+          <td>Tiroidă</td>
+          <td><span class="tag tag-gold">B. Basedow-Graves</span></td>
+          <td>⬆ T3/T4</td>
+          <td>Tahicardie, exoftalmie, scădere în greutate, tremurături</td>
+        </tr>
+        <tr>
+          <td>Tiroidă</td>
+          <td><span class="tag tag-blue">Gușă endemică</span></td>
+          <td>Lipsă iod</td>
+          <td>Glandă mărită, hipotiroidism</td>
+        </tr>
+        <tr>
+          <td>Suprarenale</td>
+          <td><span class="tag tag-red">Boala Addison</span></td>
+          <td>⬇ cortizol+aldosteron</td>
+          <td>Hipotensiune, hiperpigmentare, astenie</td>
+        </tr>
+        <tr>
+          <td>Suprarenale</td>
+          <td><span class="tag tag-gold">Sd. Cushing</span></td>
+          <td>⬆ cortizol</td>
+          <td>Față „lună plină", obezitate centrală, HTA, hiperglicemie</td>
+        </tr>
+        <tr>
+          <td>Suprarenale</td>
+          <td><span class="tag tag-gold">Boala Conn</span></td>
+          <td>⬆ aldosteron</td>
+          <td>Edeme, HTA, hipokaliemie</td>
+        </tr>
+        <tr>
+          <td>Pancreas</td>
+          <td><span class="tag tag-red">Diabet zaharat</span></td>
+          <td>⬇ insulină</td>
+          <td>Hiperglicemie, glucozurie, poliurie, polidipsie, scădere în greutate</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔁</span> Mecanism feedback hipotalamo-hipofizar</h3>
+      <div style="background:var(--gray);border-radius:10px;padding:20px;font-size:.9rem;line-height:1.8;">
+        <strong>Hipotalamus</strong> → secretă hormoni de eliberare (releasing factors)<br>
+        ↓<br>
+        <strong>Hipofiza anterioară (adenohipofiza)</strong> → secretă hormoni tropici (TSH, ACTH, FSH, LH)<br>
+        ↓<br>
+        <strong>Glandele țintă</strong> (tiroidă, suprarenale, gonade) → secretă hormonii finali<br>
+        ↓<br>
+        <strong>Feedback negativ</strong>: când concentrația hormonilor finali crește → inhibă hipotalamusul și hipofiza → scade secreția
+      </div>
+      <div class="tip-box">
+        Exemplu: ↑ T3/T4 → inhibă hipotalamusul (↓ TRH) și hipofiza (↓ TSH) → ↓ secreția tiroidiană
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📚</span> Dicționar rapid: ce înseamnă componentele din scheme?</h3>
+      <p>Când înveți după desen, întâi identifică piesele. Apoi le legi de hormon și de efect. Așa materia devine mai ușor de ținut minte.</p>
+      <div class="study-grid">
+        <div class="term-card">
+          <strong>Folicul tiroidian</strong>
+          <p>Unitatea microscopică a tiroidei. Este ca o mică veziculă: pe margine are celule foliculare, iar în centru are coloid, unde se depozitează precursorii hormonilor T3 și T4.</p>
+        </div>
+        <div class="term-card">
+          <strong>Coloid</strong>
+          <p>Lichid vâscos din foliculul tiroidian. Conține tireoglobulină, adică forma de depozit pentru hormonii tiroidieni.</p>
+        </div>
+        <div class="term-card">
+          <strong>Celule C / parafoliculare</strong>
+          <p>Celule din tiroidă care nu produc T3/T4. Ele secretă calcitonină, hormon care scade calcemia prin fixarea Ca²⁺ în oase.</p>
+        </div>
+        <div class="term-card">
+          <strong>Paratiroide</strong>
+          <p>Patru glande mici pe spatele tiroidei. Secretă PTH, hormon care crește calcemia. Sunt importante pentru echilibrul calciului.</p>
+        </div>
+        <div class="term-card">
+          <strong>Istm tiroidian</strong>
+          <p>Puntea de țesut care unește lobul stâng și lobul drept al tiroidei. De aceea tiroida are formă de „H”.</p>
+        </div>
+        <div class="term-card">
+          <strong>Adenohipofiză</strong>
+          <p>Lobul anterior al hipofizei. Produce hormoni proprii: STH, PRL, TSH, ACTH, FSH și LH.</p>
+        </div>
+        <div class="term-card">
+          <strong>Neurohipofiză</strong>
+          <p>Lobul posterior al hipofizei. Nu produce hormonii principali, ci depozitează și eliberează ADH și oxitocină produse în hipotalamus.</p>
+        </div>
+        <div class="term-card">
+          <strong>Tija hipofizară</strong>
+          <p>Legătura dintre hipotalamus și hipofiză. Prin ea trec căi nervoase și vase care duc semnale de control.</p>
+        </div>
+        <div class="term-card">
+          <strong>Regiune mediană</strong>
+          <p>Zonă a hipotalamusului implicată în legătura vasculară cu adenohipofiza. Ajută hipotalamusul să controleze secreția hipofizei anterioare.</p>
+        </div>
+        <div class="term-card">
+          <strong>Corticosuprarenală / corticală</strong>
+          <p>Partea externă a glandei suprarenale. Produce hormoni steroizi: mineralocorticoizi, glucocorticoizi și sexosteroizi.</p>
+        </div>
+        <div class="term-card">
+          <strong>Medulosuprarenală / medulară</strong>
+          <p>Partea internă a glandei suprarenale. Produce catecolamine: adrenalină și noradrenalină, importante în reacția de stres.</p>
+        </div>
+        <div class="term-card">
+          <strong>Insulele Langerhans</strong>
+          <p>Partea endocrină a pancreasului. Celulele alfa secretă glucagon, iar celulele beta secretă insulină.</p>
+        </div>
+        <div class="term-card">
+          <strong>Celule țintă</strong>
+          <p>Celule care au receptori pentru un anumit hormon. Hormonul circulă prin sânge, dar acționează doar unde găsește receptorul potrivit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🃏</span> Cartonașe de verificare</h3>
+      <p>Apasă pe un cartonaș ca să vezi răspunsul. Încearcă întâi să spui răspunsul cu voce tare.</p>
+      <div class="study-grid">
+        <details class="flashcard">
+          <summary>Ce diferență este între endocrin și exocrin?</summary>
+          <p>Endocrin = hormonii intră direct în sânge. Exocrin = secreția pleacă prin canal/duct spre o suprafață sau cavitate.</p>
+        </details>
+        <details class="flashcard">
+          <summary>Cum țin minte hipofiza?</summary>
+          <p>Anterior produce 6 hormoni. Mijlociu produce MSH. Posterior eliberează ADH și oxitocină.</p>
+        </details>
+        <details class="flashcard">
+          <summary>Ce face TSH?</summary>
+          <p>TSH stimulează tiroida să producă și să secrete hormonii tiroidieni T3 și T4.</p>
+        </details>
+        <details class="flashcard">
+          <summary>Ce face ACTH?</summary>
+          <p>ACTH stimulează corticosuprarenala, mai ales secreția de glucocorticoizi.</p>
+        </details>
+        <details class="flashcard">
+          <summary>De ce apare gușa endemică?</summary>
+          <p>Din lipsă de iod. Tiroida este stimulată de TSH, se mărește, dar nu poate produce suficienți hormoni T3/T4.</p>
+        </details>
+        <details class="flashcard">
+          <summary>Insulina vs glucagon?</summary>
+          <p>Insulina scade glicemia și favorizează depozitarea. Glucagonul crește glicemia prin glicogenoliză și gluconeogeneză.</p>
+        </details>
+        <details class="flashcard">
+          <summary>Addison vs Cushing?</summary>
+          <p>Addison = prea puțini hormoni corticosuprarenali. Cushing = prea mult cortizol.</p>
+        </details>
+        <details class="flashcard">
+          <summary>FSH vs LH?</summary>
+          <p>FSH ajută foliculii ovarieni și spermatogeneza. LH declanșează ovulația și stimulează testosteronul.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✅</span> Metode rapide de auto-verificare</h3>
+      <div class="grid2">
+        <div class="method-box">
+          <h5>1. Metoda „glanda → hormon → efect”</h5>
+          <ol>
+            <li>Alege o glandă: tiroida.</li>
+            <li>Spune hormonii: T3, T4, calcitonină.</li>
+            <li>Spune efectul: metabolism, creștere, calcemie.</li>
+          </ol>
+        </div>
+        <div class="method-box">
+          <h5>2. Metoda „hipo vs hiper”</h5>
+          <ol>
+            <li>Hipo = prea puțin hormon.</li>
+            <li>Hiper = prea mult hormon.</li>
+            <li>Leagă boala de direcție: hipo T3/T4 la adult = mixedem; hiper T3/T4 = Basedow-Graves.</li>
+          </ol>
+        </div>
+        <div class="method-box">
+          <h5>3. Metoda „unde este în desen?”</h5>
+          <ol>
+            <li>Arată poziția pe corp.</li>
+            <li>Numește subcomponenta: folicul, corticală, medulară, insulă.</li>
+            <li>Spune ce produce acea subcomponentă.</li>
+          </ol>
+        </div>
+        <div class="method-box">
+          <h5>4. Metoda „semn clinic → glandă”</h5>
+          <ol>
+            <li>Exoftalmie + slăbire = tiroidă hiperactivă.</li>
+            <li>Poliurie + polidipsie + hiperglicemie = pancreas endocrin.</li>
+            <li>Față „lună plină” = cortizol crescut.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ 8 - FINAL -->
+    <div class="quiz-section">
+      <h3>🏆 Test Final — Disfuncții & Recapitulare</h3>
+      <div class="subtitle">Testul final — acoperă toate lecțiile!</div>
+
+      <div class="q-item">
+        <div class="q-text">1. Mixedemul apare la adulți din cauza:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q1h',false)"><span class="opt-letter">A</span> Hipersecreției hormonilor tiroidieni</button>
+          <button class="q-option" onclick="selectOpt(this,'q1h',true)"><span class="opt-letter">B</span> Hiposecreției hormonilor tiroidieni</button>
+          <button class="q-option" onclick="selectOpt(this,'q1h',false)"><span class="opt-letter">C</span> Hiposecreției de insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q1h',false)"><span class="opt-letter">D</span> Hipersecreției de cortizol</button>
+        </div>
+        <div class="q-feedback" id="fb-q1h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">2. Fața „lună plină" și obezitatea centrală sunt caracteristice pentru:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q2h',false)"><span class="opt-letter">A</span> Boala Addison</button>
+          <button class="q-option" onclick="selectOpt(this,'q2h',false)"><span class="opt-letter">B</span> Boala Basedow-Graves</button>
+          <button class="q-option" onclick="selectOpt(this,'q2h',true)"><span class="opt-letter">C</span> Sindromul Cushing</button>
+          <button class="q-option" onclick="selectOpt(this,'q2h',false)"><span class="opt-letter">D</span> Diabetul insipid</button>
+        </div>
+        <div class="q-feedback" id="fb-q2h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">3. Ce hormon secretă epifiza (glanda pineală)?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q3h',false)"><span class="opt-letter">A</span> Melatonina și vasotocina</button>
+          <button class="q-option" onclick="selectOpt(this,'q3h',true)"><span class="opt-letter">B</span> Melatonina</button>
+          <button class="q-option" onclick="selectOpt(this,'q3h',false)"><span class="opt-letter">C</span> TSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q3h',false)"><span class="opt-letter">D</span> Oxitocina</button>
+        </div>
+        <div class="q-feedback" id="fb-q3h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">4. Care hormon stimulează sinteza proteinelor pe toate cele trei metabolisme?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q4h',false)"><span class="opt-letter">A</span> Glucagonul</button>
+          <button class="q-option" onclick="selectOpt(this,'q4h',true)"><span class="opt-letter">B</span> Insulina</button>
+          <button class="q-option" onclick="selectOpt(this,'q4h',false)"><span class="opt-letter">C</span> Cortizolul</button>
+          <button class="q-option" onclick="selectOpt(this,'q4h',false)"><span class="opt-letter">D</span> Adrenalina</button>
+        </div>
+        <div class="q-feedback" id="fb-q4h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">5. Boala Addison apare prin hiposecreția de:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q5h',false)"><span class="opt-letter">A</span> Insulina și glucagon</button>
+          <button class="q-option" onclick="selectOpt(this,'q5h',true)"><span class="opt-letter">B</span> Cortizol și aldosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q5h',false)"><span class="opt-letter">C</span> Adrenalina și noradrenalina</button>
+          <button class="q-option" onclick="selectOpt(this,'q5h',false)"><span class="opt-letter">D</span> STH și prolactina</button>
+        </div>
+        <div class="q-feedback" id="fb-q5h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">6. Care este singura glandă endocrină care poate fi considerată termogenetică?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q6h',false)"><span class="opt-letter">A</span> Hipofiza</button>
+          <button class="q-option" onclick="selectOpt(this,'q6h',false)"><span class="opt-letter">B</span> Pancreasul</button>
+          <button class="q-option" onclick="selectOpt(this,'q6h',true)"><span class="opt-letter">C</span> Tiroida</button>
+          <button class="q-option" onclick="selectOpt(this,'q6h',false)"><span class="opt-letter">D</span> Suprarenala</button>
+        </div>
+        <div class="q-feedback" id="fb-q6h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">7. Feedback-ul negativ în sistemul endocrin înseamnă că:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q7h',false)"><span class="opt-letter">A</span> Când concentrația hormonului crește, stimulează și mai mult producerea lui</button>
+          <button class="q-option" onclick="selectOpt(this,'q7h',true)"><span class="opt-letter">B</span> Când concentrația hormonului crește, inhibă hipotalamusul și hipofiza → scade secreția</button>
+          <button class="q-option" onclick="selectOpt(this,'q7h',false)"><span class="opt-letter">C</span> Hormonii sunt secretați în cantitate fixă, indiferent de nevoile organismului</button>
+          <button class="q-option" onclick="selectOpt(this,'q7h',false)"><span class="opt-letter">D</span> Hipotalamusul controlează direct glandele periferice, fără hipofiza</button>
+        </div>
+        <div class="q-feedback" id="fb-q7h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">8. Ce este coloidul din foliculul tiroidian?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q8h',false)"><span class="opt-letter">A</span> Un vas de sânge din tiroidă</button>
+          <button class="q-option" onclick="selectOpt(this,'q8h',true)"><span class="opt-letter">B</span> Lichid vâscos care conține tireoglobulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q8h',false)"><span class="opt-letter">C</span> Un hormon hipocalcemiant</button>
+          <button class="q-option" onclick="selectOpt(this,'q8h',false)"><span class="opt-letter">D</span> Puntea dintre lobii tiroidei</button>
+        </div>
+        <div class="q-feedback" id="fb-q8h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">9. Celulele C/parafoliculare secretă:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q9h',false)"><span class="opt-letter">A</span> Tiroxină</button>
+          <button class="q-option" onclick="selectOpt(this,'q9h',false)"><span class="opt-letter">B</span> TSH</button>
+          <button class="q-option" onclick="selectOpt(this,'q9h',true)"><span class="opt-letter">C</span> Calcitonină</button>
+          <button class="q-option" onclick="selectOpt(this,'q9h',false)"><span class="opt-letter">D</span> Aldosteron</button>
+        </div>
+        <div class="q-feedback" id="fb-q9h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">10. Care afirmație despre neurohipofiză este corectă?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q10h',false)"><span class="opt-letter">A</span> Produce TSH și ACTH</button>
+          <button class="q-option" onclick="selectOpt(this,'q10h',true)"><span class="opt-letter">B</span> Depozitează și eliberează ADH și oxitocină</button>
+          <button class="q-option" onclick="selectOpt(this,'q10h',false)"><span class="opt-letter">C</span> Secretă insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q10h',false)"><span class="opt-letter">D</span> Este zona corticală a suprarenalei</button>
+        </div>
+        <div class="q-feedback" id="fb-q10h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">11. Corticosuprarenala este partea care secretă:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q11h',true)"><span class="opt-letter">A</span> Mineralocorticoizi, glucocorticoizi și sexosteroizi</button>
+          <button class="q-option" onclick="selectOpt(this,'q11h',false)"><span class="opt-letter">B</span> Insulină și glucagon</button>
+          <button class="q-option" onclick="selectOpt(this,'q11h',false)"><span class="opt-letter">C</span> ADH și oxitocină</button>
+          <button class="q-option" onclick="selectOpt(this,'q11h',false)"><span class="opt-letter">D</span> T3 și T4</button>
+        </div>
+        <div class="q-feedback" id="fb-q11h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">12. Medulosuprarenala secretă în principal:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q12h',false)"><span class="opt-letter">A</span> Cortizol și aldosteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q12h',false)"><span class="opt-letter">B</span> Estrogen și progesteron</button>
+          <button class="q-option" onclick="selectOpt(this,'q12h',true)"><span class="opt-letter">C</span> Adrenalină și noradrenalină</button>
+          <button class="q-option" onclick="selectOpt(this,'q12h',false)"><span class="opt-letter">D</span> Melatonină</button>
+        </div>
+        <div class="q-feedback" id="fb-q12h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">13. Insulele Langerhans sunt importante deoarece:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q13h',false)"><span class="opt-letter">A</span> Produc enzime digestive în duoden</button>
+          <button class="q-option" onclick="selectOpt(this,'q13h',true)"><span class="opt-letter">B</span> Conțin celule endocrine care secretă insulină și glucagon</button>
+          <button class="q-option" onclick="selectOpt(this,'q13h',false)"><span class="opt-letter">C</span> Depozitează iodul în tiroidă</button>
+          <button class="q-option" onclick="selectOpt(this,'q13h',false)"><span class="opt-letter">D</span> Leagă hipotalamusul de hipofiză</button>
+        </div>
+        <div class="q-feedback" id="fb-q13h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">14. Ce pereche este corectă?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q14h',false)"><span class="opt-letter">A</span> Celule alfa — insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q14h',true)"><span class="opt-letter">B</span> Celule beta — insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q14h',false)"><span class="opt-letter">C</span> Celule C — glucagon</button>
+          <button class="q-option" onclick="selectOpt(this,'q14h',false)"><span class="opt-letter">D</span> Celule Leydig — progesteron</button>
+        </div>
+        <div class="q-feedback" id="fb-q14h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">15. Istmul tiroidian este:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q15h',false)"><span class="opt-letter">A</span> Un hormon tiroidian</button>
+          <button class="q-option" onclick="selectOpt(this,'q15h',true)"><span class="opt-letter">B</span> Puntea care unește cei doi lobi ai tiroidei</button>
+          <button class="q-option" onclick="selectOpt(this,'q15h',false)"><span class="opt-letter">C</span> Zona centrală a suprarenalei</button>
+          <button class="q-option" onclick="selectOpt(this,'q15h',false)"><span class="opt-letter">D</span> Un canal pancreatic</button>
+        </div>
+        <div class="q-feedback" id="fb-q15h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">16. Tija hipofizară are rolul de a:</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q16h',false)"><span class="opt-letter">A</span> Produce hormonii tiroidieni</button>
+          <button class="q-option" onclick="selectOpt(this,'q16h',true)"><span class="opt-letter">B</span> Face legătura dintre hipotalamus și hipofiză</button>
+          <button class="q-option" onclick="selectOpt(this,'q16h',false)"><span class="opt-letter">C</span> Secreta sucul pancreatic</button>
+          <button class="q-option" onclick="selectOpt(this,'q16h',false)"><span class="opt-letter">D</span> Fixa calciul în oase</button>
+        </div>
+        <div class="q-feedback" id="fb-q16h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">17. Care este schema corectă pentru controlul tiroidei?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q17h',true)"><span class="opt-letter">A</span> Hipotalamus → hipofiză → tiroidă → T3/T4</button>
+          <button class="q-option" onclick="selectOpt(this,'q17h',false)"><span class="opt-letter">B</span> Pancreas → hipofiză → tiroidă → insulină</button>
+          <button class="q-option" onclick="selectOpt(this,'q17h',false)"><span class="opt-letter">C</span> Tiroidă → gonade → ADH</button>
+          <button class="q-option" onclick="selectOpt(this,'q17h',false)"><span class="opt-letter">D</span> Timus → pancreas → TSH</button>
+        </div>
+        <div class="q-feedback" id="fb-q17h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">18. Un elev are poliurie, polidipsie și glicemie crescută. Ce glandă trebuie verificată prima?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q18h',false)"><span class="opt-letter">A</span> Epifiza</button>
+          <button class="q-option" onclick="selectOpt(this,'q18h',false)"><span class="opt-letter">B</span> Timusul</button>
+          <button class="q-option" onclick="selectOpt(this,'q18h',true)"><span class="opt-letter">C</span> Pancreasul endocrin</button>
+          <button class="q-option" onclick="selectOpt(this,'q18h',false)"><span class="opt-letter">D</span> Paratiroidele</button>
+        </div>
+        <div class="q-feedback" id="fb-q18h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">19. Care afirmație descrie corect o glandă mixtă?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q19h',false)"><span class="opt-letter">A</span> Are doar secreție internă</button>
+          <button class="q-option" onclick="selectOpt(this,'q19h',true)"><span class="opt-letter">B</span> Are și secreție endocrină, și secreție exocrină</button>
+          <button class="q-option" onclick="selectOpt(this,'q19h',false)"><span class="opt-letter">C</span> Secretă hormoni numai în tubul digestiv</button>
+          <button class="q-option" onclick="selectOpt(this,'q19h',false)"><span class="opt-letter">D</span> Nu are celule țintă</button>
+        </div>
+        <div class="q-feedback" id="fb-q19h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">20. Ce hormon pregătește mucoasa uterină pentru nidație?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q20h',false)"><span class="opt-letter">A</span> Estrogenul</button>
+          <button class="q-option" onclick="selectOpt(this,'q20h',true)"><span class="opt-letter">B</span> Progesteronul</button>
+          <button class="q-option" onclick="selectOpt(this,'q20h',false)"><span class="opt-letter">C</span> Testosteronul</button>
+          <button class="q-option" onclick="selectOpt(this,'q20h',false)"><span class="opt-letter">D</span> Glucagonul</button>
+        </div>
+        <div class="q-feedback" id="fb-q20h"></div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-text">21. Ce relație este corectă între calcitonină și PTH?</div>
+        <div class="q-options">
+          <button class="q-option" onclick="selectOpt(this,'q21h',true)"><span class="opt-letter">A</span> Calcitonina scade calcemia, PTH o crește</button>
+          <button class="q-option" onclick="selectOpt(this,'q21h',false)"><span class="opt-letter">B</span> Ambele scad calcemia</button>
+          <button class="q-option" onclick="selectOpt(this,'q21h',false)"><span class="opt-letter">C</span> Ambele cresc glicemia</button>
+          <button class="q-option" onclick="selectOpt(this,'q21h',false)"><span class="opt-letter">D</span> PTH este produs de pancreas</button>
+        </div>
+        <div class="q-feedback" id="fb-q21h"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-check" onclick="checkQuiz('lesson7')">✓ Verifică răspunsurile</button>
+        <button class="btn-quiz btn-reset" onclick="resetQuiz('lesson7')">↺ Resetează</button>
+      </div>
+      <div class="quiz-score" id="score-lesson7" style="display:none;"></div>
+    </div>
+
+    <!-- CONGRATS -->
+    <div style="background:linear-gradient(135deg,#065f46,#0d9488);border-radius:16px;padding:32px;margin-top:24px;color:white;text-align:center;">
+      <div style="font-size:3rem;">🎉</div>
+      <h3 style="font-size:1.5rem;margin:12px 0 8px;">Felicitări! Ai parcurs toate lecțiile!</h3>
+      <p style="opacity:.85;">Revizuiește lecțiile cu note slabe și reia testele pentru a consolida cunoștințele. Succes la examen!</p>
+    </div>
+  </div>
+
+  <!-- ========== LECTIA 9: INTREBARI DE ANTRENAMENT ========== -->
+  <div class="lesson" id="lesson8">
+    <div class="lesson-hero">
+      <div class="lesson-num">Lecția 9</div>
+      <h2>Întrebări de Antrenament</h2>
+      <p>O bancă separată de întrebări, în stil „verifică dacă chiar ai înțeles”: grile, răspuns scurt, adevărat/fals, asocieri și cazuri rapide.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🎯</span> Cum folosești secțiunea</h3>
+      <div class="grid2">
+        <div class="method-box">
+          <h5>Varianta rapidă</h5>
+          <ol>
+            <li>Citești întrebarea.</li>
+            <li>Spui răspunsul fără să deschizi explicația.</li>
+            <li>Deschizi „Răspuns” și verifici.</li>
+          </ol>
+        </div>
+        <div class="method-box">
+          <h5>Varianta pentru notă mare</h5>
+          <ol>
+            <li>Scrii răspunsul pe caiet.</li>
+            <li>Adaugi hormonul și boala asociată.</li>
+            <li>Verifici dacă ai inclus și subcomponenta: folicul, corticală, insulă etc.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🧠</span> Întrebări grilă explicate</h3>
+      <div class="practice-list">
+        <div class="practice-card">
+          <span class="prompt-chip">Grilă</span>
+          <h4>Care este diferența principală dintre adenohipofiză și neurohipofiză?</h4>
+          <p>A. Adenohipofiza depozitează ADH, neurohipofiza produce TSH<br>B. Adenohipofiza produce hormoni proprii, neurohipofiza eliberează hormoni produși de hipotalamus<br>C. Ambele produc insulină<br>D. Ambele sunt părți ale tiroidei</p>
+          <details class="answer"><summary>Răspuns</summary><p><strong>B.</strong> Adenohipofiza produce STH, PRL, TSH, ACTH, FSH, LH. Neurohipofiza eliberează ADH și oxitocină produse în hipotalamus.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Grilă</span>
+          <h4>Ce componentă a tiroidei depozitează precursorii hormonilor T3/T4?</h4>
+          <p>A. Istmul<br>B. Coloidul<br>C. Medulara<br>D. Celulele beta</p>
+          <details class="answer"><summary>Răspuns</summary><p><strong>B.</strong> Coloidul conține tireoglobulină, forma de depozit pentru hormonii tiroidieni.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Grilă</span>
+          <h4>Care pereche glandă-hormon este corectă?</h4>
+          <p>A. Tiroidă - insulină<br>B. Pancreas endocrin - glucagon<br>C. Epifiză - aldosteron<br>D. Medulosuprarenală - TSH</p>
+          <details class="answer"><summary>Răspuns</summary><p><strong>B.</strong> Pancreasul endocrin secretă insulină și glucagon prin insulele Langerhans.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Grilă</span>
+          <h4>Ce hormon este hipocalcemiant?</h4>
+          <p>A. Calcitonina<br>B. PTH<br>C. Glucagonul<br>D. Cortizolul</p>
+          <details class="answer"><summary>Răspuns</summary><p><strong>A.</strong> Calcitonina scade calcemia. PTH are efect opus: crește calcemia.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✍️</span> Întrebări cu răspuns scurt</h3>
+      <div class="practice-list">
+        <div class="practice-card">
+          <span class="prompt-chip">Răspuns scurt</span>
+          <h4>Explică în 2 propoziții de ce hipofiza este numită „creierul endocrin”.</h4>
+          <details class="answer"><summary>Model de răspuns</summary><p>Hipofiza controlează activitatea altor glande endocrine prin hormoni tropici. De exemplu, TSH stimulează tiroida, ACTH stimulează corticosuprarenala, iar FSH/LH controlează gonadele.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Răspuns scurt</span>
+          <h4>Ce sunt celulele țintă?</h4>
+          <details class="answer"><summary>Model de răspuns</summary><p>Sunt celule care au receptori pentru un anumit hormon. Hormonul circulă prin sânge, dar acționează numai asupra celulelor care au receptorul potrivit.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Răspuns scurt</span>
+          <h4>De ce diabetul zaharat nu este același lucru cu diabetul insipid?</h4>
+          <details class="answer"><summary>Model de răspuns</summary><p>Diabetul zaharat apare prin deficit de insulină și duce la hiperglicemie. Diabetul insipid apare prin deficit de ADH și duce la eliminarea unei cantități mari de urină diluată.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Răspuns scurt</span>
+          <h4>Ce înseamnă „glandă mixtă”? Dă două exemple.</h4>
+          <details class="answer"><summary>Model de răspuns</summary><p>O glandă mixtă are și secreție endocrină, și secreție exocrină. Exemple: pancreasul, ovarele și testiculele.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚖️</span> Adevărat sau fals</h3>
+      <div class="practice-list">
+        <div class="practice-card">
+          <span class="prompt-chip">A/F</span>
+          <h4>Neurohipofiza produce direct ADH și oxitocină.</h4>
+          <details class="answer"><summary>Răspuns</summary><p><strong>Fals.</strong> ADH și oxitocina sunt produse de hipotalamus; neurohipofiza le depozitează și le eliberează.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">A/F</span>
+          <h4>Celulele beta pancreatice secretă insulină.</h4>
+          <details class="answer"><summary>Răspuns</summary><p><strong>Adevărat.</strong> Celulele beta scad glicemia prin insulină; celulele alfa cresc glicemia prin glucagon.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">A/F</span>
+          <h4>Medulosuprarenala secretă cortizol.</h4>
+          <details class="answer"><summary>Răspuns</summary><p><strong>Fals.</strong> Cortizolul este secretat de corticosuprarenală. Medulosuprarenala secretă adrenalină și noradrenalină.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">A/F</span>
+          <h4>Gușa endemică poate apărea în lipsa iodului.</h4>
+          <details class="answer"><summary>Răspuns</summary><p><strong>Adevărat.</strong> Fără iod, tiroida nu produce suficienți hormoni, iar TSH o stimulează excesiv și se mărește.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔗</span> Asocieri rapide</h3>
+      <div class="practice-list">
+        <div class="practice-card">
+          <span class="prompt-chip">Asociere</span>
+          <h4>Asociază hormonul cu efectul: ADH, insulină, glucagon, calcitonină.</h4>
+          <p>1. Scade glicemia<br>2. Crește glicemia<br>3. Reține apa la rinichi<br>4. Scade calcemia</p>
+          <details class="answer"><summary>Răspuns</summary><p>ADH - 3; insulină - 1; glucagon - 2; calcitonină - 4.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Asociere</span>
+          <h4>Asociază boala cu hormonul implicat: gigantism, mixedem, Cushing, diabet zaharat.</h4>
+          <p>A. Cortizol crescut<br>B. STH crescut la copil<br>C. Insulină scăzută<br>D. T3/T4 scăzute la adult</p>
+          <details class="answer"><summary>Răspuns</summary><p>Gigantism - B; mixedem - D; Cushing - A; diabet zaharat - C.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Asociere</span>
+          <h4>Asociază subcomponenta cu glanda: folicul, corticală, insulă Langerhans, celule Leydig.</h4>
+          <details class="answer"><summary>Răspuns</summary><p>Folicul - tiroidă; corticală - suprarenală; insulă Langerhans - pancreas; celule Leydig - testicul.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🩺</span> Mini-cazuri ca la test</h3>
+      <div class="practice-list">
+        <div class="practice-card">
+          <span class="prompt-chip">Caz</span>
+          <h4>Un adult are scădere în greutate, tremurături, tahicardie și exoftalmie. Ce suspectezi?</h4>
+          <details class="answer"><summary>Răspuns</summary><p>Hipertiroidism, cel mai probabil boala Basedow-Graves. Hormonii T3/T4 sunt în exces.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Caz</span>
+          <h4>Un copil are statură mică armonioasă și intelect normal. Ce deficit poate fi?</h4>
+          <details class="answer"><summary>Răspuns</summary><p>Deficit de STH în copilărie, adică nanism hipofizar.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Caz</span>
+          <h4>Un pacient are poliurie mare cu urină diluată și sete intensă, dar nu are hiperglicemie. Ce hormon lipsește?</h4>
+          <details class="answer"><summary>Răspuns</summary><p>ADH. Este diabet insipid, nu diabet zaharat.</p></details>
+        </div>
+        <div class="practice-card">
+          <span class="prompt-chip">Caz</span>
+          <h4>Un pacient are față „lună plină”, obezitate centrală, hipertensiune și hiperglicemie. Ce exces hormonal sugerează?</h4>
+          <details class="answer"><summary>Răspuns</summary><p>Exces de cortizol, adică sindrom Cushing.</p></details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<script>
+// ===== STATE =====
+let currentLesson = 0;
+const totalLessons = 9;
+const completedLessons = new Set();
+const lessonTitles = [
+  'Introducere în Sistemul Endocrin',
+  'Hipofiza — Lobul Anterior',
+  'Hipofiza — Lobul Mijlociu & Posterior',
+  'Tiroida',
+  'Glandele Suprarenale',
+  'Pancreasul Endocrin',
+  'Gonadele Endocrine',
+  'Disfuncții Endocrine',
+  'Întrebări de Antrenament'
+];
+
+// ===== NAVIGATION =====
+function showLesson(idx) {
+  document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('lesson' + idx).classList.add('active');
+  document.getElementById('nav' + idx).classList.add('active');
+  document.getElementById('topTitle').textContent = lessonTitles[idx];
+  currentLesson = idx;
+  window.scrollTo(0, 0);
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextLesson() {
+  if (currentLesson < totalLessons - 1) showLesson(currentLesson + 1);
+}
+function prevLesson() {
+  if (currentLesson > 0) showLesson(currentLesson - 1);
+}
+
+// ===== QUIZ ENGINE =====
+const quizState = {};
+
+function selectOpt(btn, qId, isCorrect) {
+  const group = btn.closest('.q-item');
+  const opts = group.querySelectorAll('.q-option');
+  opts.forEach(o => o.disabled = true);
+  if (!quizState[qId]) quizState[qId] = { answered: false, correct: false };
+  quizState[qId].answered = true;
+  quizState[qId].correct = isCorrect;
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    opts.forEach(o => {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').includes('true')) {
+        o.classList.add('correct');
+      }
+    });
+  }
+}
+
+function checkQuiz(lessonId) {
+  const lesson = document.getElementById(lessonId);
+  const items = lesson.querySelectorAll('.q-item');
+  let correct = 0, total = items.length;
+
+  items.forEach((item, i) => {
+    const opts = item.querySelectorAll('.q-option');
+    opts.forEach(o => { o.disabled = true; });
+    const fb = item.querySelector('.q-feedback');
+    const correctOpt = [...opts].find(o => o.getAttribute('onclick') && o.getAttribute('onclick').includes(',true)'));
+    const chosenCorrect = correctOpt && correctOpt.classList.contains('correct');
+    if (!correctOpt.classList.contains('correct') && !correctOpt.classList.contains('wrong')) {
+      correctOpt.classList.add('correct');
+    }
+    if (chosenCorrect) {
+      correct++;
+      fb.textContent = '✓ Corect!';
+      fb.className = 'q-feedback show ok';
+    } else {
+      fb.innerHTML = '✗ Răspuns greșit. Răspunsul corect este marcat cu verde.';
+      fb.className = 'q-feedback show no';
+    }
+  });
+
+  const pct = Math.round((correct / total) * 100);
+  const scoreEl = document.getElementById('score-' + lessonId);
+  scoreEl.style.display = 'block';
+  let emoji = pct === 100 ? '🏆' : pct >= 75 ? '😊' : pct >= 50 ? '😐' : '😟';
+  let msg = pct === 100 ? 'Perfect! Ai stăpânit această lecție!' : pct >= 75 ? 'Bine! Mai exersează puțin.' : pct >= 50 ? 'Continuă să înveți, poți mai bine!' : 'Revizuiește lecția și încearcă din nou.';
+  scoreEl.innerHTML = `<div class="score-num">${emoji} ${correct}/${total}</div><p>${pct}% — ${msg}</p>`;
+
+  if (pct >= 60) {
+    completedLessons.add(lessonId);
+    const idx = parseInt(lessonId.replace('lesson', ''));
+    document.getElementById('nav' + idx).classList.add('done');
+    updateProgress();
+  }
+}
+
+function resetQuiz(lessonId) {
+  const lesson = document.getElementById(lessonId);
+  lesson.querySelectorAll('.q-option').forEach(o => {
+    o.disabled = false;
+    o.classList.remove('correct', 'wrong');
+  });
+  lesson.querySelectorAll('.q-feedback').forEach(fb => {
+    fb.className = 'q-feedback';
+    fb.textContent = '';
+  });
+  const scoreEl = document.getElementById('score-' + lessonId);
+  if (scoreEl) scoreEl.style.display = 'none';
+  Object.keys(quizState).forEach(k => delete quizState[k]);
+}
+
+function updateProgress() {
+  const pct = (completedLessons.size / totalLessons) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = completedLessons.size + ' / ' + totalLessons + ' lecții';
+}
+</script>
+</body>
+</html>

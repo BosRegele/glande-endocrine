@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title desc">
+  <title id="title">Schema glandei tiroide</title>
+  <desc id="desc">Diagramă simplificată cu laringe, lobii tiroidei, istm, trahee și un folicul tiroidian mărit.</desc>
+  <rect width="720" height="520" fill="#f8fbff"/>
+  <g transform="translate(70 35)">
+    <path d="M190 40 L235 105 L215 128 L170 55 Z" fill="#d8b48a" stroke="#8b5e34" stroke-width="3"/>
+    <path d="M270 40 L225 105 L245 128 L290 55 Z" fill="#d8b48a" stroke="#8b5e34" stroke-width="3"/>
+    <path d="M188 140 C146 175 140 260 174 314 C202 360 244 329 244 258 C244 190 224 150 188 140 Z" fill="#c46a3f" stroke="#7c2d12" stroke-width="4"/>
+    <path d="M272 140 C314 175 320 260 286 314 C258 360 216 329 216 258 C216 190 236 150 272 140 Z" fill="#c46a3f" stroke="#7c2d12" stroke-width="4"/>
+    <path d="M202 226 C218 214 242 214 258 226 L256 258 C240 248 220 248 204 258 Z" fill="#a94b2f" stroke="#7c2d12" stroke-width="3"/>
+    <rect x="207" y="318" width="46" height="120" rx="18" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <g stroke="#2563eb" stroke-width="2">
+      <line x1="220" y1="330" x2="220" y2="425"/>
+      <line x1="240" y1="330" x2="240" y2="425"/>
+      <line x1="210" y1="352" x2="250" y2="352"/>
+      <line x1="210" y1="382" x2="250" y2="382"/>
+      <line x1="210" y1="412" x2="250" y2="412"/>
+    </g>
+  </g>
+  <g transform="translate(455 145)">
+    <rect x="0" y="0" width="190" height="190" rx="22" fill="#fff7ed" stroke="#fb923c" stroke-width="3"/>
+    <circle cx="94" cy="94" r="66" fill="#fef3c7" stroke="#c2410c" stroke-width="4"/>
+    <circle cx="94" cy="94" r="38" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="36" cy="40" r="8" fill="#14b8a6"/>
+    <circle cx="154" cy="48" r="8" fill="#14b8a6"/>
+    <circle cx="148" cy="145" r="8" fill="#14b8a6"/>
+    <circle cx="48" cy="148" r="8" fill="#14b8a6"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1e3a5f">
+    <text x="28" y="88">Laringe</text>
+    <text x="23" y="226">Lob stâng</text>
+    <text x="300" y="226">Lob drept</text>
+    <text x="257" y="318">Istm</text>
+    <text x="96" y="485">Trahee</text>
+    <text x="475" y="375">Folicul tiroidian</text>
+    <text x="493" y="404" font-size="16" font-weight="600" fill="#64748b">celule foliculare + coloid</text>
+  </g>
+  <g stroke="#0d9488" stroke-width="4" stroke-linecap="round" fill="none">
+    <line x1="120" y1="82" x2="254" y2="132"/>
+    <line x1="132" y1="220" x2="248" y2="245"/>
+    <line x1="408" y1="220" x2="302" y2="245"/>
+    <line x1="298" y1="310" x2="300" y2="279"/>
+    <line x1="165" y1="468" x2="300" y2="405"/>
+    <line x1="535" y1="350" x2="548" y2="260"/>
+  </g>
+</svg>
